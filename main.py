@@ -41,20 +41,24 @@ def add_commas(num: str):
 
     return new_num
 
-async def get_ticker_info(ticker: str) -> str:
+async def get_ticker_info(ticker: str) -> dict:
     """"""
     yf_ticker = yf.Ticker(ticker)
 
     ticker_info = yf_ticker.info
-    # for k, v in ticker_info.items():
-    #     print(f"{k}: {v}")
-    fifty_week_low = ticker_info["fiftyTwoWeekLow"] 
-    fifty_week_high = ticker_info["fiftyTwoWeekHigh"]
-    fifty_day_avg = ticker_info["fiftyDayAverage"]
-    short_ratio = ticker_info["shortRatio"]
-    company_name = ticker_info["longName"]
-    symbol = ticker_info["symbol"]
-    avg_volume = ticker_info["averageVolume"]
+
+    try:
+        symbol = ticker_info["symbol"]
+        fifty_week_low = ticker_info["fiftyTwoWeekLow"] 
+        fifty_week_high = ticker_info["fiftyTwoWeekHigh"]
+        fifty_day_avg = ticker_info["fiftyDayAverage"]
+        short_ratio = ticker_info["shortRatio"]
+        company_name = ticker_info["longName"]
+        avg_volume = ticker_info["averageVolume"]
+    except KeyError as e:
+        return {"Status": f"Unable to retreive stock info for {ticker} (For Crypto, use !coin)"}
+    
+
 
     # TODO: See if theres any difference between rec_data_frame data and the recent data from yf_ticker 
     rec_data_frame = yf_ticker.history(period="1d")
@@ -87,6 +91,10 @@ async def plot_stock_info(ticker: str, range: str):
     # data['Close'].plot()
     # plt.title("Apple Stock Prices")
     # plt.show()
+
+
+async def get_coin_info(coin: str) -> dict:
+    pass
 
 
 def main():
