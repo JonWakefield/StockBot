@@ -1,1 +1,29 @@
 .env
+
+
+# root ignores
+*.pptx
+py_env/*
+pyenv/*
+.ssh/*
+
+# Ignore environment-specific files
+.env
+
+#Ignore compiled python files
+*.pyc
+__pycache__/*
+
+
+# Ignore database filse or directories
+*.db
+*.sqlite
+*sql
+
+# Ignore IDE-sepcific files
+.vscode/
+
+
+# Ignore logs and cache
+*.log
+*.cache
