@@ -58,13 +58,8 @@ async def get_ticker_info(ticker: str) -> dict:
     except KeyError as e:
         return {"Status": f"Unable to retreive stock info for {ticker} (For Crypto, use !coin)"}
     
-
-
-    # TODO: See if theres any difference between rec_data_frame data and the recent data from yf_ticker 
+    # TODO: During market hours, See if theres any difference between rec_data_frame data and the recent data from yf_ticker 
     rec_data_frame = yf_ticker.history(period="1d")
-
-    open_val = rec_data_frame['Open'].iloc[0]
-    high_val = rec_data_frame['High'].iloc[0]
 
     stock_data = {
         "Company": company_name,
@@ -94,7 +89,43 @@ async def plot_stock_info(ticker: str, range: str):
 
 
 async def get_coin_info(coin: str) -> dict:
-    pass
+
+    coin = coin + "-USD"
+
+    yf_ticker = yf.Ticker(coin)
+
+    coin_info = yf_ticker.info
+
+    try:
+        symbol = coin_info["fromCurrency"]
+        market = coin_info["lastMarket"]
+        fifty_week_low = coin_info["fiftyTwoWeekLow"] 
+        fifty_week_high = coin_info["fiftyTwoWeekHigh"]
+        fifty_day_avg = coin_info["fiftyDayAverage"]
+        avg_volume = coin_info["averageVolume"]
+    except KeyError as e:
+        return {"Status": f"Unable to retreive coin info for {coin} (For Stocks, use !ticker)"}
+    
+
+    # TODO: During market hours, See if theres any difference between rec_data_frame data and the recent data from yf_ticker 
+    rec_data_frame = yf_ticker.history(period="1d")
+
+
+    coin_data = {
+        "Market": market,
+        "Ticker": symbol,
+        "High": round(rec_data_frame['High'].iloc[0], decimal_places),
+        "Open": round(rec_data_frame['Open'].iloc[0], decimal_places),
+        "Close": round(rec_data_frame['Close'].iloc[0], decimal_places),
+        "Low": round(rec_data_frame['Low'].iloc[0], decimal_places),
+        "Volume": add_commas(str(rec_data_frame['Volume'].iloc[0])),
+        "Avg. Volume": add_commas(str(avg_volume)),
+        "52 Week High": fifty_week_high, 
+        "50 Day Avg.": fifty_day_avg,
+        "52 Week Low": fifty_week_low, 
+    }
+
+    return coin_data
 
 
 def main():
@@ -109,15 +140,16 @@ def main():
         print(bot.user.id)
 
     @bot.command(
-            help="shown from !help",
-            description="This is a description",
+            aliases=["i"],
+            help="Get information regarding the bot",
+            description="description",
             brief="This is a brief",
             enable=True,
             hidden=False,
     )
-    async def ping(ctx):
-        """ command description (shown when user types !help)"""
-        await ctx.send("pong")
+    async def info(ctx):
+        # TODO: provide some info on stock bot (What he can do, where he gets his data / tickers / coins from )
+        str_ = ""
 
 
     @bot.command(
@@ -127,7 +159,7 @@ def main():
             enalbe=True,
             hidden=False
     )
-    async def get_stock_info(ctx, ticker: str=None):
+    async def ticker_command(ctx, ticker: str=None):
 
         if ticker is None:
             await ctx.send("Please provide a ticker")
@@ -143,6 +175,29 @@ def main():
         # to send something back we go 
         await ctx.send(embed=embed)
 
+
+    @bot.command(
+            aliases=["coin"],
+            description="Retreive cryptocurrency information about the provided coin",
+            brief="This is the brief",
+            enalbe=True,
+            hidden=False
+    )
+    async def coin_command(ctx, coin: str=None):
+
+        if coin is None:
+            await ctx.send("Please provide a coin")
+            return
+        
+        coin_data = await get_coin_info(coin=coin)
+
+        embed = discord.Embed(title="Coin Data", color=0x00ff00)
+
+        for k, v in coin_data.items():
+            embed.add_field(name=k, value=v, inline=True)
+        
+        # to send something back we go 
+        await ctx.send(embed=embed)
 
     bot.run(bot_settings.DISCORD_API_SECRET)
 
