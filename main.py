@@ -1,27 +1,10 @@
-from config import bot_settings
+from config.config import bot_settings, log
 import discord
 from discord.ext import commands
 import yfinance as yf
 import matplotlib.pyplot as plt
 
 """
-    - Retrieve:
-
-        1. Current stock price
-        2. Opening price
-        3. Closing Price
-        4. could do % up / down on the day
-        5. Volume
-        6. Range ?
-
-        [Full Company Name]
-        [QuoteSourceName]
-
-        [Current Price]
-        [Opening Price]
-        [Closing Price]
-        [Volume]
-        [Range]
 
 """
 
@@ -81,11 +64,16 @@ async def get_ticker_info(ticker: str) -> dict:
 
 
 
-async def plot_stock_info(ticker: str, range: str):
-    pass
-    # data['Close'].plot()
-    # plt.title("Apple Stock Prices")
-    # plt.show()
+async def  create_security_chart(security: str,
+                                 start: str="2024-04-08",
+                                 end: str="2024-04-12"):
+
+
+
+    data = yf.download(security, start=start, end=end)
+    data['Close'].plot()
+    plt.title("Apple Stock Prices")
+    plt.show()
 
 
 async def get_coin_info(coin: str) -> dict:
@@ -139,66 +127,9 @@ def main():
         print(bot.user)
         print(bot.user.id)
 
-    @bot.command(
-            aliases=["i"],
-            help="Get information regarding the bot",
-            description="description",
-            brief="This is a brief",
-            enable=True,
-            hidden=False,
-    )
-    async def info(ctx):
-        # TODO: provide some info on stock bot (What he can do, where he gets his data / tickers / coins from )
-        str_ = ""
+    
 
-
-    @bot.command(
-            aliases=["ticker"],
-            description="Retreive stock information on the provided Ticker",
-            brief="This is the brief",
-            enalbe=True,
-            hidden=False
-    )
-    async def ticker_command(ctx, ticker: str=None):
-
-        if ticker is None:
-            await ctx.send("Please provide a ticker")
-            return 
-        
-        stock_data = await get_ticker_info(ticker=ticker)
-
-        embed = discord.Embed(title="Stock Data", color=0x00ff00)
-
-        for k, v in stock_data.items():
-            embed.add_field(name=k, value=v, inline=True)
-        
-        # to send something back we go 
-        await ctx.send(embed=embed)
-
-
-    @bot.command(
-            aliases=["coin"],
-            description="Retreive cryptocurrency information about the provided coin",
-            brief="This is the brief",
-            enalbe=True,
-            hidden=False
-    )
-    async def coin_command(ctx, coin: str=None):
-
-        if coin is None:
-            await ctx.send("Please provide a coin")
-            return
-        
-        coin_data = await get_coin_info(coin=coin)
-
-        embed = discord.Embed(title="Coin Data", color=0x00ff00)
-
-        for k, v in coin_data.items():
-            embed.add_field(name=k, value=v, inline=True)
-        
-        # to send something back we go 
-        await ctx.send(embed=embed)
-
+    log.info("bot up and running...")
     bot.run(bot_settings.DISCORD_API_SECRET)
 
 

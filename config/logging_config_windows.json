@@ -1,0 +1,40 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+      "verbose_old": {
+        "format": "%(levelname)-5s - %(asctime)-5s - %(module)s|L%(lineno)s: %(message)s",
+        "datefmt": "%Y-%m-%d %I:%M:%S %p%z"
+      },
+      "verbose": {
+        "format": "%(levelname)-5s - %(asctime)-5s - %(message)s",
+        "datefmt": "%Y-%m-%d %H:%M:%S%z"
+      }
+    },
+    "handlers": {
+      "file": {
+        "class": "logging.handlers.RotatingFileHandler",
+        "level": "INFO",
+        "formatter": "verbose",
+        "filename": "logs/bot.log",
+        "maxBytes": 2097152,
+        "backupCount": 5
+      },
+      "queue_handler": {
+        "class": "logging.handlers.QueueHandler",
+        "handlers": [
+          "file"
+        ],
+        "respect_handler_level": true
+      }
+    },
+    "loggers": {
+        "__name__": {
+            "level": "INFO",
+            "handlers": [
+              "queue_handler"
+            ],
+            "propagate": false
+        }
+    }
+  }
