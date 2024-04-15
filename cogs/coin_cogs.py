@@ -3,16 +3,19 @@ from discord.ext import commands
 from src.coins import Coins
 
 
-class CoinCommands(commands.Cog):
+class CoinCogs(commands.Cog, 
+               name="Coins",
+               description="Commands used to retreive cryptocurrency based information"):
     
     def __init__(self, bot):
         self.bot = bot
     
     @commands.command(
+            name="Crypto",
             aliases=["coin"],
-            help="This is the help",
+            help="Useage Example: !coin BTC\nUser can provide multiple coins in the same request",
             description="Retreive cryptocurrency information about the provided coin",
-            brief="This is the brief",
+            brief="Retreive Cryptocurrency information",
             enalbe=True,
             hidden=False
     )
@@ -34,10 +37,11 @@ class CoinCommands(commands.Cog):
 
 
     @commands.command(
-            aliases=["CoinChart"],
-            help="This is the help",
-            description="Create a chart for the requested security",
-            brief="",
+            name="CoinCharts",
+            aliases=["coinchart"],
+            help="Useage Example: !coinchart BTC\nUser can provide multiple coins in the same request",
+            description="Create a chart for the requested coin",
+            brief="Create Cryptocurrency charts",
             enable=True,
             hidden=False
     )

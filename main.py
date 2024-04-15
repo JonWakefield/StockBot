@@ -1,8 +1,8 @@
 from config.config import bot_settings, log
 import discord
 from discord.ext import commands
-from cogs.coin_commands import CoinCommands
-from cogs.stock_commands import StockCommands
+from cogs.coin_cogs import CoinCogs
+from cogs.stock_cogs import StockCogs
 """
 
 """
@@ -18,8 +18,8 @@ def main():
         print(bot.user)
         print(bot.user.id)
 
-        await bot.add_cog(StockCommands(bot))
-        await bot.add_cog(CoinCommands(bot))
+        await bot.add_cog(StockCogs(bot))
+        await bot.add_cog(CoinCogs(bot))
 
     
 

@@ -1,24 +1,9 @@
 # from ..cogs.finance import Finance
 import matplotlib.pyplot as plt
 import yfinance as yf
+from utils.strings import Strings
 
 decimal_places = 2
-
-
-def add_commas(num: str):
-    """ add commas to large numbers to make them more readable """
-    new_num = ""
-    rev_num = num[::-1]
-    if len(num) < 4: return num
-
-    for idx, char in enumerate(rev_num):
-        if idx % 3 == 0 and idx != 0:
-            new_num = char + "," + new_num
-        else:
-            new_num = char + new_num
-
-    return new_num
-
 
 
 class Coins():
@@ -55,8 +40,8 @@ class Coins():
             "Open": round(rec_data_frame['Open'].iloc[0], decimal_places),
             "Close": round(rec_data_frame['Close'].iloc[0], decimal_places),
             "Low": round(rec_data_frame['Low'].iloc[0], decimal_places),
-            "Volume": add_commas(str(rec_data_frame['Volume'].iloc[0])),
-            "Avg. Volume": add_commas(str(avg_volume)),
+            "Volume": Strings.add_commas(str(rec_data_frame['Volume'].iloc[0])),
+            "Avg. Volume": Strings.add_commas(str(avg_volume)),
             "52 Week High": fifty_week_high, 
             "50 Day Avg.": fifty_day_avg,
             "Short Ratio": short_ratio,
@@ -110,8 +95,8 @@ class Coins():
             "Open": round(rec_data_frame['Open'].iloc[0], decimal_places),
             "Close": round(rec_data_frame['Close'].iloc[0], decimal_places),
             "Low": round(rec_data_frame['Low'].iloc[0], decimal_places),
-            "Volume": add_commas(str(rec_data_frame['Volume'].iloc[0])),
-            "Avg. Volume": add_commas(str(avg_volume)),
+            "Volume": Strings.add_commas(str(rec_data_frame['Volume'].iloc[0])),
+            "Avg. Volume": Strings.add_commas(str(avg_volume)),
             "52 Week High": fifty_week_high, 
             "50 Day Avg.": fifty_day_avg,
             "52 Week Low": fifty_week_low, 
