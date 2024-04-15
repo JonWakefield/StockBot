@@ -45,10 +45,10 @@ class CoinCogs(commands.Cog,
             enable=True,
             hidden=False
     )
-    async def coin_chart_command(self, ctx, security: str):
+    async def coin_chart_command(self, ctx, coin: str):
         
-        if security is None:
+        if coin is None:
             await ctx.send("Please provide a security. !help for more details")
 
-        # security_chart = await Stocks.create_security_chart(security=security)
+        coin_chart = await Coins.create_coin_chart(coin=coin)
 

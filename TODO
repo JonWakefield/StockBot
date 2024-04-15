@@ -1,2 +1,4 @@
+- Allow for n tickers and n coins
 - Stock / Coin charts
-- Refactor code base
+- refactor this dogshit codebase
+- Proper error handleing

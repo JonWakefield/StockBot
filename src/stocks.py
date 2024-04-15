@@ -2,9 +2,7 @@
 import matplotlib.pyplot as plt
 import yfinance as yf
 from utils.strings import Strings
-decimal_places = 2
-
-
+from config.config import bot_settings, log
 
 class Stocks():
 
@@ -36,10 +34,10 @@ class Stocks():
         stock_data = {
             "Company": company_name,
             "Ticker": symbol,
-            "High": round(rec_data_frame['High'].iloc[0], decimal_places),
-            "Open": round(rec_data_frame['Open'].iloc[0], decimal_places),
-            "Close": round(rec_data_frame['Close'].iloc[0], decimal_places),
-            "Low": round(rec_data_frame['Low'].iloc[0], decimal_places),
+            "High": round(rec_data_frame['High'].iloc[0], bot_settings.DECIMAL_PLACES),
+            "Open": round(rec_data_frame['Open'].iloc[0], bot_settings.DECIMAL_PLACES),
+            "Close": round(rec_data_frame['Close'].iloc[0], bot_settings.DECIMAL_PLACES),
+            "Low": round(rec_data_frame['Low'].iloc[0], bot_settings.DECIMAL_PLACES),
             "Volume": Strings.add_commas(str(rec_data_frame['Volume'].iloc[0])),
             "Avg. Volume": Strings.add_commas(str(avg_volume)),
             "52 Week High": fifty_week_high, 
@@ -53,7 +51,7 @@ class Stocks():
 
 
 
-    async def create_security_chart(security: str,
+    async def create_stock_chart(security: str,
                                     start: str="2024-04-08",
                                     end: str="2024-04-12"):
 
@@ -63,45 +61,3 @@ class Stocks():
         data['Close'].plot()
         plt.title("Apple Stock Prices")
         plt.show()
-
-
-    async def get_coin_info(coin: str) -> dict:
-
-        coin = coin + "-USD"
-
-        yf_ticker = yf.Ticker(coin)
-
-        coin_info = yf_ticker.info
-
-        try:
-            symbol = coin_info["fromCurrency"]
-            market = coin_info["lastMarket"]
-            fifty_week_low = coin_info["fiftyTwoWeekLow"] 
-            fifty_week_high = coin_info["fiftyTwoWeekHigh"]
-            fifty_day_avg = coin_info["fiftyDayAverage"]
-            avg_volume = coin_info["averageVolume"]
-        except KeyError as e:
-            return {"Status": f"Unable to retreive coin info for {coin} (For Stocks, use !ticker)"}
-        
-
-        # TODO: During market hours, See if theres any difference between rec_data_frame data and the recent data from yf_ticker 
-        rec_data_frame = yf_ticker.history(period="1d")
-
-
-        coin_data = {
-            "Market": market,
-            "Ticker": symbol,
-            "High": round(rec_data_frame['High'].iloc[0], decimal_places),
-            "Open": round(rec_data_frame['Open'].iloc[0], decimal_places),
-            "Close": round(rec_data_frame['Close'].iloc[0], decimal_places),
-            "Low": round(rec_data_frame['Low'].iloc[0], decimal_places),
-            "Volume": Strings.add_commas(str(rec_data_frame['Volume'].iloc[0])),
-            "Avg. Volume": Strings.add_commas(str(avg_volume)),
-            "52 Week High": fifty_week_high, 
-            "50 Day Avg.": fifty_day_avg,
-            "52 Week Low": fifty_week_low, 
-        }
-
-        return coin_data
-
-

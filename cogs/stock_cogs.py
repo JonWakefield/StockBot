@@ -49,14 +49,14 @@ class StockCogs(commands.Cog,
             enable=True,
             hidden=False
     )
-    async def stock_chart_command(self, ctx, security: str):
+    async def stock_chart_command(self, ctx, stock: str):
         """
             #TODO: Add ability for multiple stocks
             #TODO: Add ability to set time range
             #TODO: Add ability to set what gets plotted (closing price, volume, etc.)
         """
-        if security is None:
-            await ctx.send("Please provide a security. !help for more details")
+        if stock is None:
+            await ctx.send("Please provide a stock. !help for more details")
 
-        security_chart = await Stocks.create_security_chart(security=security)
+        stock_chart = await Stocks.create_stock_chart(stock=stock)
 

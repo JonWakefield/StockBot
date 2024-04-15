@@ -14,6 +14,7 @@ print(f"CMDS DIR IS {CMDS_DIR}")
 
 class Settings(BaseSettings):
     DISCORD_API_SECRET: str = os.getenv('DISCORD_API_TOKEN')
+    DECIMAL_PLACES: int = 2
 
 
 
