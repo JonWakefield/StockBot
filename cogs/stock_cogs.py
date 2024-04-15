@@ -42,22 +42,35 @@ class StockCogs(commands.Cog,
 
 
     @commands.command(
-            name="StockCharts",
-            aliases=["stockchart"],
+            name="chart",
+            aliases=["charts"],
             help="Useage Example: !stockchart AAPL\nUser can provide multiple tickers in the same request",
             description="Create a chart based on the user provided ticker",
             brief="Create Stock Charts",
             enable=True,
             hidden=False
     )
-    async def stock_chart_command(self, ctx, stock: str):
+    async def stock_chart_command(self, ctx, stock: str=None, type: str="line"):
         """
-            #TODO: Add ability for multiple stocks
-            #TODO: Add ability to set time range
-            #TODO: Add ability to set what gets plotted (closing price, volume, etc.)
         """
+
         if stock is None:
-            await ctx.send("Please provide a stock. !help for more details")
+            await ctx.send("Please provide a stock. `!help charts` for more details")
 
-        stock_chart = await Stocks.create_stock_chart(stock=stock)
+        match type:
+            case "candle":
+                chart = await Stocks.create_candle_chart(security=stock)
 
+            case "line":
+                chart = await Stocks.create_line_chart(security=stock)
+
+            case "area":
+                chart = await Stocks.create_area_chart(security=stock)
+
+            case _:
+                # INVALID CHART TYPE
+                print("default")
+                return False
+
+        # await ctx.send("sending...")
+        await ctx.send(file=discord.File(chart, 'chart.jpg'))

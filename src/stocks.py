@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 from utils.strings import Strings
 from config.config import bot_settings, log
+import numpy as np
+import io
+from PIL import Image
 
 class Stocks():
 
@@ -51,13 +54,43 @@ class Stocks():
 
 
 
-    async def create_stock_chart(security: str,
-                                    start: str="2024-04-08",
-                                    end: str="2024-04-12"):
-
-
+    async def create_line_chart(security: str,
+                                    start: str="2024-01-08",
+                                    end: str="2024-04-12") -> bytes:
+        """
+            #TODO :
+            1) add ability to set x-interval (day, week, 1-hour, etc.) 
+            2) Add ability to set time range
+            3) Add ability to set what gets plotted (closing price, volume, etc.)
+            4) add ability to do different chart types (line, area, candle, etc.)
+            5) Add ability for multiple stocks
+        
+        """
 
         data = yf.download(security, start=start, end=end)
         data['Close'].plot()
-        plt.title("Apple Stock Prices")
-        plt.show()
+        plt.title(f"{security} Stock Prices")
+
+        # create an in-memory binrary stream to store the file
+        buf = io.BytesIO()
+        # write the figure to the in-memory binary stream (instead of a file on disk)
+        plt.savefig(buf, format='png')
+        # move position back to the start of the file (so we read from the start)
+        buf.seek(0)
+        # close the plot
+        plt.close()
+
+        return buf
+    
+
+    async def create_candle_chart(security: str,
+                                    start: str="2024-01-08",
+                                    end: str="2024-04-12"):
+        
+        pass
+
+    async def create_area_chart(security: str,
+                                    start: str="2024-01-08",
+                                    end: str="2024-04-12"):
+        
+        pass
