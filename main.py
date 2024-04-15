@@ -1,8 +1,8 @@
-from config.config import bot_settings, log, BASE_DIR, CMDS_DIR
+from config.config import bot_settings, log
 import discord
 from discord.ext import commands
-from cmds import stock
-
+from cogs.coin_commands import CoinCommands
+from cogs.stock_commands import StockCommands
 """
 
 """
@@ -18,17 +18,15 @@ def main():
         print(bot.user)
         print(bot.user.id)
 
-        # load in our python files in the CMDS directory
-        for cmd_file in CMDS_DIR.glob("*.py"):
-            if cmd_file.name != "__init__.py":
-                await bot.load_extension(f"cmds.{cmd_file.name[:-3]}")
+        await bot.add_cog(StockCommands(bot))
+        await bot.add_cog(CoinCommands(bot))
 
     
 
     log.info("bot up and running...")
     bot.run(bot_settings.DISCORD_API_SECRET)
+ 
 
 
-
-if __name__ == "__main__":
+if __name__ == "__main__":  
     main()
