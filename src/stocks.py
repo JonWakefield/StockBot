@@ -128,4 +128,24 @@ class Stocks():
                                     start: str="2024-01-08",
                                     end: str="2024-04-12"):
         
-        pass
+
+        stock_data = yf.download(security, start=start, end=end)
+
+        stock_data['Close'].plot()
+
+        plt.fill_between(stock_data.index, stock_data['Close'], color="blue", alpha=0.6, label="Area 1")
+
+        plt.ylim(160,200) #TODO: Need to find best way to set lower and upper bound y-limits
+
+        plt.title(f"{security} Stock Prices")
+
+        # create an in-memory binrary stream to store the file
+        buf = io.BytesIO()
+        # write the figure to the in-memory binary stream (instead of a file on disk)
+        plt.savefig(buf, format='png')
+        # move position back to the start of the file (so we read from the start)
+        buf.seek(0)
+        # close the plot
+        plt.close()
+
+        return buf
