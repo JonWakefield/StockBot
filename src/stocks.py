@@ -87,7 +87,42 @@ class Stocks():
                                     start: str="2024-01-08",
                                     end: str="2024-04-12"):
         
-        pass
+        color1 = "red"
+        color2 = "green"
+        width = 0.3
+        width2 = 0.03
+
+        stock_data = yf.download(security, start=start, end=end)
+        
+
+        up = stock_data[stock_data['Close'] >= stock_data['Open']]
+        down = stock_data[stock_data['Close'] < stock_data['Open']]
+
+        # # Plotting up prices of the stock 
+        plt.bar(up.index, up["Close"] - up["Open"], width, bottom=up["Open"], color=color1) 
+        plt.bar(up.index, up["High"] - up["Close"], width2, bottom=up["Close"], color=color1) 
+        plt.bar(up.index, up["Low"] - up["Open"], width2, bottom=up["Open"], color=color1) 
+
+        # Plotting down prices of the stock 
+        plt.bar(down.index, down["Close"] - down["Open"], width, bottom=down["Open"], color=color2) 
+        plt.bar(down.index, down["High"] -  down["Open"], width2, bottom=down["Open"], color=color2) 
+        plt.bar(down.index, down["Low"] - down["Close"], width2, bottom=down["Close"], color=color2) 
+
+        # # rotating the x-axis tick labels at 30degree 
+        # # towards right 
+        plt.xticks(rotation=30, ha='right') 
+
+
+        # # create an in-memory binrary stream to store the file
+        buf = io.BytesIO()
+        # # write the figure to the in-memory binary stream (instead of a file on disk)
+        plt.savefig(buf, format='png')
+        # # move position back to the start of the file (so we read from the start)
+        buf.seek(0)
+        # # close the plot
+        plt.close()
+
+        return buf
 
     async def create_area_chart(security: str,
                                     start: str="2024-01-08",

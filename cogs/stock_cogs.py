@@ -70,7 +70,8 @@ class StockCogs(commands.Cog,
             case _:
                 # INVALID CHART TYPE
                 print("default")
-                return False
+                await ctx.send("Unrecognized chart type. `!help charts` for more details")
+                return None
 
         # await ctx.send("sending...")
         await ctx.send(file=discord.File(chart, 'chart.jpg'))
