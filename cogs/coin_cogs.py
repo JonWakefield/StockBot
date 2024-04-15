@@ -19,21 +19,22 @@ class CoinCogs(commands.Cog,
             enalbe=True,
             hidden=False
     )
-    async def coin_command(self, ctx, coin: str=None):
+    async def coin_command(self, ctx, *coins: str) -> dict:
 
-        if coin is None:
-            await ctx.send("Please provide a coin. !help for more details")
+        if not coins:
+            await ctx.send("Please provide a coin. `!help coin` for more details")
             return
         
-        coin_data = await Coins.get_coin_info(coin=coin)
-
-        embed = discord.Embed(title="Coin Data", color=0x00ff00)
-
-        for k, v in coin_data.items():
-            embed.add_field(name=k, value=v, inline=True)
-        
-        # to send something back we go 
-        await ctx.send(embed=embed)
+        for coin in coins:
+            coin_data = await Coins.get_coin_info(coin=coin)
+    
+            embed = discord.Embed(title=f"Coin Data for ${coin.upper()}", color=0x00ff00)
+    
+            for k, v in coin_data.items():
+                embed.add_field(name=k, value=v, inline=True)
+            
+            # to send something back we go 
+            await ctx.send(embed=embed)
 
 
     @commands.command(

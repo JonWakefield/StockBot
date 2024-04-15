@@ -1,4 +1,5 @@
 - Allow for n tickers and n coins
+- ETF support
 - Stock / Coin charts
 - refactor this dogshit codebase
 - Proper error handleing
