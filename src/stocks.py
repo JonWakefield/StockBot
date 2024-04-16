@@ -55,20 +55,21 @@ class Stocks():
 
 
     async def create_line_chart(security: str,
-                                    start: str="2024-01-08",
-                                    end: str="2024-04-12") -> bytes:
+                                time_frame: str,
+                                interval: str,
+                                y_axis: str) -> bytes:
         """
             #TODO :
-            1) add ability to set x-interval (day, week, 1-hour, etc.) 
-            2) Add ability to set time range
             3) Add ability to set what gets plotted (closing price, volume, etc.)
             4) add ability to do different chart types (line, area, candle, etc.)
             5) Add ability for multiple stocks
         
         """
 
-        data = yf.download(security, start=start, end=end)
-        data['Close'].plot()
+        stock_data = yf.download(tickers=security, 
+                                 period=time_frame,
+                                 interval=interval)
+        stock_data[y_axis].plot()
         plt.title(f"{security} Stock Prices")
 
         # create an in-memory binrary stream to store the file
@@ -84,16 +85,17 @@ class Stocks():
     
 
     async def create_candle_chart(security: str,
-                                    start: str="2024-01-08",
-                                    end: str="2024-04-12"):
+                                  time_frame: str,
+                                  interval: str) -> bytes:
         
         color1 = "red"
         color2 = "green"
         width = 0.3
         width2 = 0.03
 
-        stock_data = yf.download(security, start=start, end=end)
-        
+        stock_data = yf.download(tickers=security, 
+                                 period=time_frame,
+                                 interval=interval)
 
         up = stock_data[stock_data['Close'] >= stock_data['Open']]
         down = stock_data[stock_data['Close'] < stock_data['Open']]
@@ -125,15 +127,18 @@ class Stocks():
         return buf
 
     async def create_area_chart(security: str,
-                                    start: str="2024-01-08",
-                                    end: str="2024-04-12"):
+                                time_frame: str,
+                                interval: str,
+                                y_axis: str) -> bytes:
         
 
-        stock_data = yf.download(security, start=start, end=end)
+        stock_data = yf.download(tickers=security, 
+                                 period=time_frame,
+                                 interval=interval)
 
-        stock_data['Close'].plot()
+        stock_data[y_axis].plot()
 
-        plt.fill_between(stock_data.index, stock_data['Close'], color="blue", alpha=0.6, label="Area 1")
+        plt.fill_between(stock_data.index, stock_data[y_axis], color="blue", alpha=0.6, label="Area 1")
 
         plt.ylim(160,200) #TODO: Need to find best way to set lower and upper bound y-limits
 

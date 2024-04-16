@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from src.stocks import Stocks
-
+from config.config import bot_settings
 
 class StockCogs(commands.Cog, 
                 name="Stocks",
@@ -20,13 +20,13 @@ class StockCogs(commands.Cog,
             enable=True,
             hidden=False
     )
-    async def ticker_command(self, ctx, *tickers: str) -> dict:
+    async def ticker_command(self, ctx, *tickers: str) -> dict | None:
         # TODO: use *ticker to allow for multiple arguments
         # TODO: Allow user to enter n tickers; if ticker not found, skip it
 
         if not tickers:
             await ctx.send("Please provide a ticker. `!help ticker` for more details")
-            return 
+            return None
         
         for ticker in tickers:
 
@@ -50,22 +50,54 @@ class StockCogs(commands.Cog,
             enable=True,
             hidden=False
     )
-    async def stock_chart_command(self, ctx, stock: str=None, type: str="line"):
+    async def stock_chart_command(self, 
+                                  ctx, 
+                                  stock: str=None, 
+                                  type: str="line",
+                                  time_frame: str="ytd",
+                                  interval: str="1d",
+                                  y_axis: str="Close") -> dict | None:
         """
         """
+        time_frame = time_frame.lower()
+        interval = interval.lower()
+        y_axis = y_axis.capitalize()
 
         if stock is None:
             await ctx.send("Please provide a stock. `!help charts` for more details")
+            return None
+
+        if time_frame not in bot_settings.VALID_TIME_FRAMES:
+            await ctx.send("Please provide a valid time frame `!help charts` for more details")
+            return None
+
+        if interval not in bot_settings.VALID_INTERVALS:
+            await ctx.send("Please provide a valid interval `!help charts` for more details")
+            return None
+        
+        if y_axis not in bot_settings.VALID_Y_AXIS:
+            await ctx.send("Please provide a Y-axis `!help charts` for more details")
+            return None
+
 
         match type:
             case "candle":
-                chart = await Stocks.create_candle_chart(security=stock)
+                chart = await Stocks.create_candle_chart(security=stock,
+                                                         time_frame=time_frame,
+                                                         interval=interval,
+                                                         y_axis=y_axis)
 
             case "line":
-                chart = await Stocks.create_line_chart(security=stock)
+                chart = await Stocks.create_line_chart(security=stock,
+                                                       time_frame=time_frame,
+                                                       interval=interval,
+                                                       y_axis=y_axis)
 
             case "area":
-                chart = await Stocks.create_area_chart(security=stock)
+                chart = await Stocks.create_area_chart(security=stock,
+                                                       time_frame=time_frame,
+                                                       interval=interval,
+                                                       y_axis=y_axis)
 
             case _:
                 # INVALID CHART TYPE
