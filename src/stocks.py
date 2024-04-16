@@ -56,8 +56,7 @@ class Stocks():
 
     async def create_line_chart(security: str,
                                 time_frame: str,
-                                interval: str,
-                                y_axis: str) -> bytes:
+                                interval: str) -> bytes:
         """
         """
         font = {
@@ -67,8 +66,8 @@ class Stocks():
             'size': 16,
         }
 
-        color1 = "green"
-        color2 = "red"
+        color1 = "#00FF00"
+        color2 = "#FF0000"
 
         stock_data = yf.download(tickers=security, 
                                  period=time_frame,
@@ -77,40 +76,48 @@ class Stocks():
         # Calculate daily price change
         stock_data['Price Change'] = stock_data['Close'].diff()
 
+        fig, ax1 = plt.subplots()
+
+        ax2 = ax1.twinx()
+        ax2.bar(stock_data.index, stock_data['Volume'], alpha=0.3)
+
         # Create the plot
         for i in range(1, len(stock_data)):
             if stock_data['Price Change'].iloc[i] >= 0:
-                plt.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=color1)
+                ax1.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=color1)
             else:
-                plt.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=color2)
+                ax1.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=color2)
                         
 
-        # stock_data[y_axis].plot(color='#FFFDD0') # uncomment to go back to original
-        if y_axis == "Volume": plt.title(f"${security.upper()} {time_frame.upper()} {y_axis}", fontdict=font)
-        else: plt.title(f"${security.upper()} {time_frame.upper()} {y_axis} Prices", fontdict=font)
+        plt.title(f"${security.upper()} {time_frame.upper()}", fontdict=font)
 
 
         # Set background color of the entire chart
-        # plt.gcf().set_facecolor('#0c0a09')  # Use any color code or name you prefer
-        plt.gcf().set_facecolor('#020617')  # Use any color code or name you prefer
-
+        fig.set_facecolor('#1B1B1B') 
         # Set background color of the plot area
-        plt.gca().set_facecolor('#1B1B1B')  # Use any color code or name you prefer
+        ax1.set_facecolor('none') 
+
+        # change z-order so bar chart is behind line
+        ax2.set_zorder(1)
+        ax1.set_zorder(2.5)
 
         plt.xlabel('', fontdict=font)
-        # plt.ylabel('$', fontdict=font)
 
         # Change the color of x and y-axis tick marks
-        plt.tick_params(axis='x', 
-                        colors='#FFFDD0',
+        ax1.tick_params(colors='#FFFDD0',
                         labelsize=7)
-        plt.tick_params(axis='y', 
-                        colors='#FFFDD0',
-                        labelsize=8)
+        ax2.tick_params(axis='y', 
+                        which='both', 
+                        colors="#FFFDD0", 
+                        labelsize=7)
 
         # Add grid lines
-        plt.grid(color='gray', linestyle='--', linewidth=0.5)
+        ax1.grid(color='#eeeeee', 
+                 linestyle='--', 
+                 linewidth=0.5)
 
+
+        ax2.set_yscale('log')
         # create an in-memory binrary stream to store the file
         buf = io.BytesIO()
         # write the figure to the in-memory binary stream (instead of a file on disk)

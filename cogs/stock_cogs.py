@@ -55,8 +55,7 @@ class StockCogs(commands.Cog,
                                   stock: str=None, 
                                   type: str="line",
                                   time_frame: str="ytd",
-                                  interval: str="1d",
-                                  y_axis: str="Close") -> dict | None:
+                                  interval: str="1d") -> dict | None:
         """
         """
         time_frame = time_frame.lower()
@@ -89,14 +88,12 @@ class StockCogs(commands.Cog,
             case "line":
                 chart = await Stocks.create_line_chart(security=stock,
                                                        time_frame=time_frame,
-                                                       interval=interval,
-                                                       y_axis=y_axis)
+                                                       interval=interval)
 
             case "area":
                 chart = await Stocks.create_area_chart(security=stock,
                                                        time_frame=time_frame,
-                                                       interval=interval,
-                                                       y_axis=y_axis)
+                                                       interval=interval)
 
             case _:
                 # INVALID CHART TYPE
