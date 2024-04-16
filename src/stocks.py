@@ -65,12 +65,35 @@ class Stocks():
             5) Add ability for multiple stocks
         
         """
+        font = {
+            'family': 'serif',
+            'color': 'darkred',
+            'weight': 'bold',
+            'size': 16,
+        }
 
         stock_data = yf.download(tickers=security, 
                                  period=time_frame,
                                  interval=interval)
-        stock_data[y_axis].plot()
-        plt.title(f"{security} Stock Prices")
+        
+        stock_data[y_axis].plot(color='peachpuff')
+        if y_axis == "Volume": plt.title(f"${security.upper()} {time_frame.upper()} {y_axis}", fontdict=font)
+        else: plt.title(f"${security.upper()} {time_frame.upper()} {y_axis} Prices", fontdict=font)
+
+
+        # Set background color of the entire chart
+        plt.gcf().set_facecolor('#0c0a09')  # Use any color code or name you prefer
+
+        # Set background color of the plot area
+        plt.gca().set_facecolor('#020617')  # Use any color code or name you prefer
+        # plt.gca().set_facecolor('#0c0a09')  # Use any color code or name you prefer
+
+        plt.xlabel('X-axis', fontdict=font)
+        plt.ylabel('Y-axis', fontdict=font)
+
+        # Change the color of x and y-axis tick marks
+        plt.tick_params(axis='x', colors='darkred')
+        plt.tick_params(axis='y', colors='darkred')
 
         # create an in-memory binrary stream to store the file
         buf = io.BytesIO()
