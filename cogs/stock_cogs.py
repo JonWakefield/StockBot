@@ -60,7 +60,6 @@ class StockCogs(commands.Cog,
         """
         time_frame = time_frame.lower()
         interval = interval.lower()
-        y_axis = y_axis.capitalize()
 
         if stock is None:
             await ctx.send("Please provide a stock. `!help charts` for more details")
@@ -74,11 +73,6 @@ class StockCogs(commands.Cog,
             await ctx.send("Please provide a valid interval `!help charts` for more details")
             return None
         
-        if y_axis not in bot_settings.VALID_Y_AXIS:
-            await ctx.send("Please provide a Y-axis `!help charts` for more details")
-            return None
-
-
         match type:
             case "candle":
                 chart = await Stocks.create_candle_chart(security=stock,

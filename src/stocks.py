@@ -1,11 +1,8 @@
-# from ..cogs.finance import Finance
 import matplotlib.pyplot as plt
 import yfinance as yf
 from utils.strings import Strings
 from config.config import bot_settings, log
-import numpy as np
 import io
-from PIL import Image
 
 class Stocks():
 
@@ -59,15 +56,6 @@ class Stocks():
                                 interval: str) -> bytes:
         """
         """
-        font = {
-            'family': 'serif',
-            'color': '#FFFDD0',
-            'weight': 'bold',
-            'size': 16,
-        }
-
-        color1 = "#00FF00"
-        color2 = "#FF0000"
 
         stock_data = yf.download(tickers=security, 
                                  period=time_frame,
@@ -79,45 +67,48 @@ class Stocks():
         fig, ax1 = plt.subplots()
 
         ax2 = ax1.twinx()
-        ax2.bar(stock_data.index, stock_data['Volume'], alpha=0.3)
+        ax2.bar(stock_data.index, 
+                stock_data['Volume'], 
+                alpha=0.25, 
+                color=bot_settings.VOLUME_COLOR)
 
         # Create the plot
         for i in range(1, len(stock_data)):
             if stock_data['Price Change'].iloc[i] >= 0:
-                ax1.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=color1)
+                ax1.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=bot_settings.GREEN_COLOR)
             else:
-                ax1.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=color2)
+                ax1.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=bot_settings.RED_COLOR)
                         
 
-        plt.title(f"${security.upper()} {time_frame.upper()}", fontdict=font)
+        plt.title(f"${security.upper()} {time_frame.upper()}", fontdict=bot_settings.FONT_DICT)
 
 
         # Set background color of the entire chart
-        fig.set_facecolor('#1B1B1B') 
+        fig.set_facecolor(bot_settings.BACKGROUND_COLOR) 
         # Set background color of the plot area
-        ax1.set_facecolor('none') 
+        ax1.set_facecolor('none') # ensure the bar chart can be seen
 
         # change z-order so bar chart is behind line
         ax2.set_zorder(1)
         ax1.set_zorder(2.5)
 
-        plt.xlabel('', fontdict=font)
+        plt.xlabel('', fontdict=bot_settings.FONT_DICT)
 
         # Change the color of x and y-axis tick marks
-        ax1.tick_params(colors='#FFFDD0',
+        ax1.tick_params(colors=bot_settings.WHITE_COLOR,
                         labelsize=7)
         ax2.tick_params(axis='y', 
                         which='both', 
-                        colors="#FFFDD0", 
+                        colors=bot_settings.WHITE_COLOR, 
                         labelsize=7)
 
         # Add grid lines
-        ax1.grid(color='#eeeeee', 
+        ax1.grid(color=bot_settings.WHITE_COLOR, 
                  linestyle='--', 
                  linewidth=0.5)
 
-
         ax2.set_yscale('log')
+
         # create an in-memory binrary stream to store the file
         buf = io.BytesIO()
         # write the figure to the in-memory binary stream (instead of a file on disk)
@@ -134,51 +125,58 @@ class Stocks():
                                   time_frame: str,
                                   interval: str) -> bytes:
         
-        color1 = "red"
-        color2 = "green"
-        width = 0.3
-        width2 = 0.03
-
-        font = {
-            'family': 'serif',
-            'color': '#FFFDD0',
-            'weight': 'bold',
-            'size': 16,
-        }
-
         stock_data = yf.download(tickers=security, 
                                  period=time_frame,
                                  interval=interval)
+        
+
+        fig, ax1 = plt.subplots()
+        ax2 = ax1.twinx()
+
+        ax2.bar(stock_data.index,
+                stock_data['Volume'],
+                alpha=0.25,
+                color=bot_settings.VOLUME_COLOR)
         
         # setup data
         up = stock_data[stock_data['Close'] >= stock_data['Open']]
         down = stock_data[stock_data['Close'] < stock_data['Open']]
 
         # # Plotting up prices of the stock 
-        plt.bar(up.index, up["Close"] - up["Open"], width, bottom=up["Open"], color=color1) 
-        plt.bar(up.index, up["High"] - up["Close"], width2, bottom=up["Close"], color=color1) 
-        plt.bar(up.index, up["Low"] - up["Open"], width2, bottom=up["Open"], color=color1) 
+        ax1.bar(up.index, up["Close"] - up["Open"], bot_settings.CANDLE_WIDTH, bottom=up["Open"], color=bot_settings.GREEN_COLOR) 
+        ax1.bar(up.index, up["High"] - up["Close"], bot_settings.STEM_WIDTH, bottom=up["Close"], color=bot_settings.GREEN_COLOR) 
+        ax1.bar(up.index, up["Low"] - up["Open"], bot_settings.STEM_WIDTH, bottom=up["Open"], color=bot_settings.GREEN_COLOR) 
 
         # Plotting down prices of the stock 
-        plt.bar(down.index, down["Close"] - down["Open"], width, bottom=down["Open"], color=color2) 
-        plt.bar(down.index, down["High"] -  down["Open"], width2, bottom=down["Open"], color=color2) 
-        plt.bar(down.index, down["Low"] - down["Close"], width2, bottom=down["Close"], color=color2) 
+        ax1.bar(down.index, down["Close"] - down["Open"],  bot_settings.CANDLE_WIDTH, bottom=down["Open"], color=bot_settings.RED_COLOR) 
+        ax1.bar(down.index, down["High"] -  down["Open"], bot_settings.STEM_WIDTH, bottom=down["Open"], color=bot_settings.RED_COLOR) 
+        ax1.bar(down.index, down["Low"] - down["Close"], bot_settings.STEM_WIDTH, bottom=down["Close"], color=bot_settings.RED_COLOR) 
 
         # # rotating the x-axis tick labels at 30degree 
-        # # towards right 
         plt.xticks(rotation=30, ha='right') 
 
         # custom the chart
-        plt.title(f"${security.upper()} {time_frame.upper()} Candles", fontdict=font)
-        plt.gcf().set_facecolor('#020617')
-        plt.gca().set_facecolor('#1B1B1B')
+        plt.title(f"${security.upper()} {time_frame.upper()}", fontdict=bot_settings.FONT_DICT)
 
-        # Change the color of x and y-axis tick marks
-        plt.tick_params(axis='x', colors='#FFFDD0')
-        plt.tick_params(axis='y', colors='#FFFDD0')
+        fig.set_facecolor(bot_settings.BACKGROUND_COLOR)
+        ax1.set_facecolor('none')
 
-        # Add grid lines
-        plt.grid(color='gray', linestyle='--', linewidth=0.5)
+        ax2.set_zorder(1)
+        ax1.set_zorder(2.5)
+
+        ax1.tick_params(colors=bot_settings.WHITE_COLOR,
+                        labelsize=7)
+        
+        ax2.tick_params(colors=bot_settings.WHITE_COLOR,
+                        axis='y',
+                        which='both',
+                        labelsize=7)
+        
+        ax1.grid(color=bot_settings.WHITE_COLOR, 
+                 linestyle='--', 
+                 linewidth=0.5)
+
+        ax2.set_yscale('log')
 
         # # create an in-memory binrary stream to store the file
         buf = io.BytesIO()
@@ -193,17 +191,26 @@ class Stocks():
 
     async def create_area_chart(security: str,
                                 time_frame: str,
-                                interval: str,
-                                y_axis: str) -> bytes:
+                                interval: str) -> bytes:
         
 
         stock_data = yf.download(tickers=security, 
                                  period=time_frame,
                                  interval=interval)
+        
+        fig, ax1 = plt.subplots()
 
-        stock_data[y_axis].plot()
+        ax2 = ax1.twinx()
 
-        plt.fill_between(stock_data.index, stock_data[y_axis], color="blue", alpha=0.6, label="Area 1")
+        ax2.bar(stock_data.index, 
+                stock_data['Volume'], 
+                alpha=0.25, 
+                color=bot_settings.VOLUME_COLOR)
+
+        # stock_data["Close"].plot()
+        ax1.plot(stock_data["Close"])
+
+        plt.fill_between(stock_data.index, stock_data["Close"], color="blue", alpha=0.6, label="Area 1")
 
         plt.ylim(160,200) #TODO: Need to find best way to set lower and upper bound y-limits
 
