@@ -84,8 +84,7 @@ class StockCogs(commands.Cog,
             case "candle":
                 chart = await Stocks.create_candle_chart(security=stock,
                                                          time_frame=time_frame,
-                                                         interval=interval,
-                                                         y_axis=y_axis)
+                                                         interval=interval)
 
             case "line":
                 chart = await Stocks.create_line_chart(security=stock,

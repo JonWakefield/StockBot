@@ -1,4 +1,8 @@
 - ETF support
 - Coin charts
 - refactor this dogshit codebase
-- Proper error handleing
+- Proper error handling
+- Logs
+- Area charts
+- something like "env vars" for when users use the command
+- Add data classes

@@ -59,41 +59,57 @@ class Stocks():
                                 interval: str,
                                 y_axis: str) -> bytes:
         """
-            #TODO :
-            3) Add ability to set what gets plotted (closing price, volume, etc.)
-            4) add ability to do different chart types (line, area, candle, etc.)
-            5) Add ability for multiple stocks
-        
         """
         font = {
             'family': 'serif',
-            'color': 'darkred',
+            'color': '#FFFDD0',
             'weight': 'bold',
             'size': 16,
         }
+
+        color1 = "green"
+        color2 = "red"
 
         stock_data = yf.download(tickers=security, 
                                  period=time_frame,
                                  interval=interval)
         
-        stock_data[y_axis].plot(color='peachpuff')
+        # Calculate daily price change
+        stock_data['Price Change'] = stock_data['Close'].diff()
+
+        # Create the plot
+        for i in range(1, len(stock_data)):
+            if stock_data['Price Change'].iloc[i] >= 0:
+                plt.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=color1)
+            else:
+                plt.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=color2)
+                        
+
+        # stock_data[y_axis].plot(color='#FFFDD0') # uncomment to go back to original
         if y_axis == "Volume": plt.title(f"${security.upper()} {time_frame.upper()} {y_axis}", fontdict=font)
         else: plt.title(f"${security.upper()} {time_frame.upper()} {y_axis} Prices", fontdict=font)
 
 
         # Set background color of the entire chart
-        plt.gcf().set_facecolor('#0c0a09')  # Use any color code or name you prefer
+        # plt.gcf().set_facecolor('#0c0a09')  # Use any color code or name you prefer
+        plt.gcf().set_facecolor('#020617')  # Use any color code or name you prefer
 
         # Set background color of the plot area
-        plt.gca().set_facecolor('#020617')  # Use any color code or name you prefer
-        # plt.gca().set_facecolor('#0c0a09')  # Use any color code or name you prefer
+        plt.gca().set_facecolor('#1B1B1B')  # Use any color code or name you prefer
 
-        plt.xlabel('X-axis', fontdict=font)
-        plt.ylabel('Y-axis', fontdict=font)
+        plt.xlabel('', fontdict=font)
+        # plt.ylabel('$', fontdict=font)
 
         # Change the color of x and y-axis tick marks
-        plt.tick_params(axis='x', colors='darkred')
-        plt.tick_params(axis='y', colors='darkred')
+        plt.tick_params(axis='x', 
+                        colors='#FFFDD0',
+                        labelsize=7)
+        plt.tick_params(axis='y', 
+                        colors='#FFFDD0',
+                        labelsize=8)
+
+        # Add grid lines
+        plt.grid(color='gray', linestyle='--', linewidth=0.5)
 
         # create an in-memory binrary stream to store the file
         buf = io.BytesIO()
@@ -116,10 +132,18 @@ class Stocks():
         width = 0.3
         width2 = 0.03
 
+        font = {
+            'family': 'serif',
+            'color': '#FFFDD0',
+            'weight': 'bold',
+            'size': 16,
+        }
+
         stock_data = yf.download(tickers=security, 
                                  period=time_frame,
                                  interval=interval)
-
+        
+        # setup data
         up = stock_data[stock_data['Close'] >= stock_data['Open']]
         down = stock_data[stock_data['Close'] < stock_data['Open']]
 
@@ -137,6 +161,17 @@ class Stocks():
         # # towards right 
         plt.xticks(rotation=30, ha='right') 
 
+        # custom the chart
+        plt.title(f"${security.upper()} {time_frame.upper()} Candles", fontdict=font)
+        plt.gcf().set_facecolor('#020617')
+        plt.gca().set_facecolor('#1B1B1B')
+
+        # Change the color of x and y-axis tick marks
+        plt.tick_params(axis='x', colors='#FFFDD0')
+        plt.tick_params(axis='y', colors='#FFFDD0')
+
+        # Add grid lines
+        plt.grid(color='gray', linestyle='--', linewidth=0.5)
 
         # # create an in-memory binrary stream to store the file
         buf = io.BytesIO()

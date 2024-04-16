@@ -49,9 +49,6 @@ class Settings(BaseSettings):
 
     VALID_Y_AXIS: set = {
         "Close",
-        "Open",
-        "High",
-        "Low",
         "Volume",
     }
 
