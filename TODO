@@ -1,8 +1,8 @@
-- ETF support
-- Coin charts
+- ETF support (probably make an etf command)
 - refactor this dogshit codebase
 - Proper error handling
 - Logs
-- Area charts
 - something like "env vars" for when users use the command
 - Add data classes
+- fix the chart bug with the days
+- change command from charts to chart

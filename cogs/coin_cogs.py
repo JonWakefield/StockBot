@@ -35,21 +35,3 @@ class CoinCogs(commands.Cog,
             
             # to send something back we go 
             await ctx.send(embed=embed)
-
-
-    @commands.command(
-            name="CoinCharts",
-            aliases=["coinchart"],
-            help="Useage Example: !coinchart BTC\nUser can provide multiple coins in the same request",
-            description="Create a chart for the requested coin",
-            brief="Create Cryptocurrency charts",
-            enable=True,
-            hidden=False
-    )
-    async def coin_chart_command(self, ctx, coin: str):
-        
-        if coin is None:
-            await ctx.send("Please provide a security. !help for more details")
-
-        coin_chart = await Coins.create_coin_chart(coin=coin)
-

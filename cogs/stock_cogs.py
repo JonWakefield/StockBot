@@ -21,9 +21,6 @@ class StockCogs(commands.Cog,
             hidden=False
     )
     async def ticker_command(self, ctx, *tickers: str) -> dict | None:
-        # TODO: use *ticker to allow for multiple arguments
-        # TODO: Allow user to enter n tickers; if ticker not found, skip it
-
         if not tickers:
             await ctx.send("Please provide a ticker. `!help ticker` for more details")
             return None
@@ -42,15 +39,43 @@ class StockCogs(commands.Cog,
 
 
     @commands.command(
-            name="chart",
-            aliases=["charts"],
+            name="ETF",
+            aliases=["etf"],
+            help="Useage Example: !etf SPY\nUser can provide multiple etfs in the same request",
+            description="Retreive ETF information on the provided ETF",
+            brief="Retreive ETF infromation",
+            enable=True,
+            hidden=False
+    )
+    async def etf_command(self, ctx, *etfs: str) -> dict | None:
+        if not etfs:
+            await ctx.send("Please provide a ETF. `!help etf` for more details")
+            return None
+        
+        for etf in etfs:
+
+            etf_data = await Stocks.get_etf_info(ticker=etf)
+
+            embed = discord.Embed(title=f"ETF data for ${etf.upper()}", color=0x00ff00)
+
+            for k, v in etf_data.items():
+                embed.add_field(name=k, value=v, inline=True)
+
+            await ctx.send(embed=embed)
+
+
+
+
+    @commands.command(
+            name="Chart",
+            aliases=["chart"],
             help="Useage Example: !stockchart AAPL\nUser can provide multiple tickers in the same request",
             description="Create a chart based on the user provided ticker",
             brief="Create Stock Charts",
             enable=True,
             hidden=False
     )
-    async def stock_chart_command(self, 
+    async def chart_command(self, 
                                   ctx, 
                                   stock: str=None, 
                                   type: str="line",
@@ -78,17 +103,10 @@ class StockCogs(commands.Cog,
                 chart = await Stocks.create_candle_chart(security=stock,
                                                          time_frame=time_frame,
                                                          interval=interval)
-
             case "line":
                 chart = await Stocks.create_line_chart(security=stock,
                                                        time_frame=time_frame,
                                                        interval=interval)
-
-            case "area":
-                chart = await Stocks.create_area_chart(security=stock,
-                                                       time_frame=time_frame,
-                                                       interval=interval)
-
             case _:
                 # INVALID CHART TYPE
                 print("default")
