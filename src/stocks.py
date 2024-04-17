@@ -126,23 +126,28 @@ class Stocks():
                                  period=time_frame,
                                  interval=interval)
         
+
         # Calculate daily price change
-        stock_data['Price Change'] = stock_data['Close'].diff()
+        stock_data['Price Change'] = stock_data['Close'] - stock_data['Open']
 
         fig, ax1 = plt.subplots()
 
+        # NOTE: Bandaid fix to matplotlibs bullshit imaginary date problem
+        dates = stock_data.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
+        close_prices = stock_data["Close"]
         ax2 = ax1.twinx()
-        ax2.bar(stock_data.index, 
+        ax2.bar(dates, 
                 stock_data['Volume'], 
                 alpha=0.25, 
                 color=bot_settings.VOLUME_COLOR)
 
+
         # Create the plot
         for i in range(1, len(stock_data)):
             if stock_data['Price Change'].iloc[i] >= 0:
-                ax1.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=bot_settings.GREEN_COLOR)
+                ax1.plot([dates[i - 1], dates[i]], [close_prices.iloc[i - 1], close_prices.iloc[i]], color=bot_settings.GREEN_COLOR)
             else:
-                ax1.plot([stock_data.index[i - 1], stock_data.index[i]], [stock_data['Close'].iloc[i - 1], stock_data['Close'].iloc[i]], color=bot_settings.RED_COLOR)
+                ax1.plot([dates[i - 1], dates[i]], [close_prices.iloc[i - 1], close_prices.iloc[i]], color=bot_settings.RED_COLOR)
                         
 
         plt.title(f"${security.upper()} {time_frame.upper()}", fontdict=bot_settings.FONT_DICT)
@@ -162,6 +167,9 @@ class Stocks():
         # Change the color of x and y-axis tick marks
         ax1.tick_params(colors=bot_settings.WHITE_COLOR,
                         labelsize=7)
+
+        ax1.set_xticks(dates[::15])
+
         ax2.tick_params(axis='y', 
                         which='both', 
                         colors=bot_settings.WHITE_COLOR, 

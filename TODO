@@ -1,2 +1,2 @@
 - something like "env vars" for when users use the command
-- fix the chart bug with the days
+- Scale the width of the candle charts (both,) when the period is changed

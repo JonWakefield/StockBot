@@ -100,11 +100,11 @@ class StockCogs(commands.Cog,
             hidden=False
     )
     async def chart_command(self, 
-                                  ctx, 
-                                  stock: str=None, 
-                                  type: str="line",
-                                  time_frame: str="ytd",
-                                  interval: str="1d") -> dict | None:
+                            ctx, 
+                            stock: str=None, 
+                            type: str="line",
+                            time_frame: str="ytd",
+                            interval: str="1d") -> dict | None:
         """
         """
         time_frame = time_frame.lower()
