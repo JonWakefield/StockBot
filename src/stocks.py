@@ -5,6 +5,7 @@ from config.config import bot_settings, log
 import io
 
 class Stocks():
+
     
     async def get_ticker_info(ticker: str) -> dict:
         """"""
@@ -44,8 +45,6 @@ class Stocks():
 
     async def get_coin_info(coin: str) -> dict:
         """"""
-
-        coin = coin + "-USD"
 
         yf_ticker = yf.Ticker(coin)
 
@@ -115,8 +114,6 @@ class Stocks():
             log.info(f"Got error trying to retreive key info for ticker {ticker}. Error {e}")
             return {"Status": f"Unable to retreive ETF info for {ticker} (For Stocks, use !ticker. For coins, use !coin)"}
         
-
-
 
 
     async def create_line_chart(security: str,
