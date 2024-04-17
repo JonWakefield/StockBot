@@ -47,6 +47,7 @@ class Settings(BaseSettings):
         "ytd",
     }
 
+    # not used but leaving as reference for all possible invtervals yfinance supports
     VALID_INTERVALS: set = {
         "1m",
         "2m",
@@ -63,12 +64,38 @@ class Settings(BaseSettings):
         "3mo",
     }
 
+    SUBDAY_RANGES: set = {
+        "1m",
+        "2m",
+        "5m",
+        "15m",
+        "30m",
+        "60m",
+        "90m",
+        "1h",
+    }
+
     DAY_RANGES: set = {
         "1d",
         "5d",
         "1wk",
         "1mo",
         "3mo",
+    }
+
+    # Explanation: For example, can't support users wanting to do 5y:5m charts (breaks matplotlib, just too much data)
+    # Ensures the user provided combination is valid (also prevents interval > time_frame)
+    VALID_CHART_COMBOS: dict = {
+        "1d": SUBDAY_RANGES,
+        "5d": SUBDAY_RANGES.add("1d"),
+        "1mo": VALID_INTERVALS.remove("3mo"),
+        "3mo": VALID_INTERVALS,
+        "6mo": VALID_INTERVALS,
+        "1y": VALID_INTERVALS,
+        "2y": VALID_INTERVALS,
+        "5y": VALID_INTERVALS,
+        "10y": VALID_INTERVALS,
+        "ytd": VALID_INTERVALS,
     }
 
     VALID_Y_AXIS: set = {

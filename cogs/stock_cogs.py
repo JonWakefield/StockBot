@@ -118,7 +118,7 @@ class StockCogs(commands.Cog,
             await ctx.send("Please provide a valid time frame `!help charts` for more details")
             return None
 
-        if interval not in bot_settings.VALID_INTERVALS:
+        if interval not in bot_settings.VALID_CHART_COMBOS[time_frame]:
             await ctx.send("Please provide a valid interval `!help charts` for more details")
             return None
         
