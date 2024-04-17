@@ -1,7 +1,6 @@
 from config.config import bot_settings, log
 import discord
 from discord.ext import commands
-from cogs.coin_cogs import CoinCogs
 from cogs.stock_cogs import StockCogs
 """
 
@@ -19,8 +18,6 @@ def main():
         print(bot.user.id)
 
         await bot.add_cog(StockCogs(bot))
-        await bot.add_cog(CoinCogs(bot))
-
     
 
     log.info("bot up and running...")

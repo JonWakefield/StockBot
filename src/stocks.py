@@ -8,57 +8,101 @@ class Stocks():
     
     async def get_ticker_info(ticker: str) -> dict:
         """"""
+
         yf_ticker = yf.Ticker(ticker)
 
         ticker_info = yf_ticker.info
 
         try:
-            stock_data = {
-                "Company": ticker_info["longName"],
-                "Ticker": ticker_info["symbol"],
-                "High": ticker_info['dayHigh'],
-                "Open": ticker_info['open'],
-                "Close": ticker_info['previousClose'],
-                "Low": ticker_info['dayLow'],
-                "Volume": Strings.add_commas(str(ticker_info['volume'])),
-                "Avg. Volume": Strings.add_commas(str(ticker_info["averageVolume"])),
-                "52 Week High": ticker_info["fiftyTwoWeekHigh"], 
-                "50 Day Avg.": ticker_info["fiftyDayAverage"],
-                "Short Ratio": ticker_info["shortRatio"],
-                "52 Week Low": ticker_info["fiftyTwoWeekLow"], 
-            }
-            return stock_data
+            if ticker_info["quoteType"] != "EQUITY":
+                log.info(f"Wrong equity type submitted {ticker}")
+                return {"Status": f"Unable to retreive stock info for {ticker} (For Crypto, use !coin. For ETF, use !etf)"}
         except KeyError as e:
+            log.info(f"Unknown equity submitted {ticker}")
             return {"Status": f"Unable to retreive stock info for {ticker} (For Crypto, use !coin. For ETF, use !etf)"}
 
-    
+
+        stock_data = {
+            "Company": ticker_info["longName"],
+            "Ticker": ticker_info["symbol"],
+            "High": ticker_info['dayHigh'],
+            "Open": ticker_info['open'],
+            "Close": ticker_info['previousClose'],
+            "Low": ticker_info['dayLow'],
+            "Volume": Strings.add_commas(str(ticker_info['volume'])),
+            "Avg. Volume": Strings.add_commas(str(ticker_info["averageVolume"])),
+            "52 Week High": ticker_info["fiftyTwoWeekHigh"], 
+            "50 Day Avg.": ticker_info["fiftyDayAverage"],
+            "Short Ratio": ticker_info["shortRatio"],
+            "52 Week Low": ticker_info["fiftyTwoWeekLow"], 
+        }
+        return stock_data
+        
+
+
+    async def get_coin_info(coin: str) -> dict:
+        """"""
+
+        coin = coin + "-USD"
+
+        yf_ticker = yf.Ticker(coin)
+
+        ticker_info = yf_ticker.info
+
+        try:
+            if ticker_info["quoteType"] != "CRYPTOCURRENCY":
+                log.info(f"Wrong equity type submitted {coin}")
+                return {"Status": f"Unable to retreive stock info for {coin} (For Stocks, use !ticker. For ETFs, use !etf)"}
+        except KeyError as e:
+            log.info(f"Unknown coin submitted {coin}")
+            return {"Status": f"Unable to retreive stock info for {coin} (For Stocks, use !ticker. For ETFs, use !etf)"}
+            
+        coin_data = {
+            "Market": ticker_info["lastMarket"],
+            "Ticker": ticker_info["fromCurrency"],
+            "High": ticker_info["dayHigh"],
+            "Open": ticker_info["open"],
+            "Close": ticker_info["previousClose"],
+            "Low": ticker_info["dayLow"],
+            "Volume": Strings.add_commas(str(ticker_info['volume'])),
+            "Avg. Volume": Strings.add_commas(str(ticker_info["averageVolume"])),
+            "52 Week High": ticker_info["fiftyTwoWeekHigh"], 
+            "50 Day Avg.": ticker_info["fiftyDayAverage"],
+            "52 Week Low": ticker_info["fiftyTwoWeekLow"], 
+        }
+
+        return coin_data
 
     async def get_etf_info(ticker: str) -> dict:
+        """"""
 
         yf_ticker = yf.Ticker(ticker)
 
         ticker_info = yf_ticker.info
 
-        if ticker_info['quoteType'] != "ETF":
+        try:
+            if ticker_info['quoteType'] != "ETF":
+                log.info(f"Wrong equity type submitted {ticker}")
+                return {"Status": f"Unable to retreive stock info for {ticker} (For Crypto, use !coin. For ETF, use !etf)"}
+        except KeyError as e:
+            log.info(f"Unknown etf submitted {ticker}")
             return {"Status": f"Unable to retreive stock info for {ticker} (For Crypto, use !coin. For ETF, use !etf)"}
 
-        try:
-            stock_data = {
-                "Ticker": ticker_info["symbol"],
-                "High": ticker_info['dayHigh'],
-                "Open": ticker_info['open'],
-                "Close": ticker_info['previousClose'],
-                "Low": ticker_info['dayLow'],
-                "Volume": Strings.add_commas(str(ticker_info['volume'])),
-                "Avg. Volume": Strings.add_commas(str(ticker_info["averageVolume"])),
-                "52 Week High": ticker_info["fiftyTwoWeekHigh"], 
-                "50 Day Avg.": ticker_info["fiftyDayAverage"],
-                "52 Week Low": ticker_info["fiftyTwoWeekLow"], 
-            }
+        stock_data = {
+            "Ticker": ticker_info["symbol"],
+            "High": ticker_info['dayHigh'],
+            "Open": ticker_info['open'],
+            "Close": ticker_info['previousClose'],
+            "Low": ticker_info['dayLow'],
+            "Volume": Strings.add_commas(str(ticker_info['volume'])),
+            "Avg. Volume": Strings.add_commas(str(ticker_info["averageVolume"])),
+            "52 Week High": ticker_info["fiftyTwoWeekHigh"], 
+            "50 Day Avg.": ticker_info["fiftyDayAverage"],
+            "52 Week Low": ticker_info["fiftyTwoWeekLow"], 
+        }
     
-            return stock_data
-        except KeyError as e:
-            return {"Status": f"Unable to retreive stock info for {ticker} (For Crypto, use !coin. For ETF, use !etf)"}
+        return stock_data
+        
 
 
 
