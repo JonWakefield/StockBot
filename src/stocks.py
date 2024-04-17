@@ -128,7 +128,7 @@ class Stocks():
         
 
         # Calculate daily price change
-        stock_data['Price Change'] = stock_data['Close'] - stock_data['Open']
+        stock_data['Price Change'] = stock_data['Close'].diff()
 
         fig, ax1 = plt.subplots()
 
