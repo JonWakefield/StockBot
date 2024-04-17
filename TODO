@@ -1,2 +1,4 @@
 - something like "env vars" for when users use the command
 - Scale the width of the candle charts (both,) when the period is changed
+- Error handling when a unknown ticker is submitted
+- Set a limit for what is allowed for intervals and ranges (i.e can't have a 5y:5m chart)

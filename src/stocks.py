@@ -126,21 +126,24 @@ class Stocks():
                                  period=time_frame,
                                  interval=interval)
         
+        num_points = len(stock_data)
 
         # Calculate daily price change
         stock_data['Price Change'] = stock_data['Close'].diff()
 
         fig, ax1 = plt.subplots()
 
-        # NOTE: Bandaid fix to matplotlibs bullshit imaginary date problem
-        dates = stock_data.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
+        if interval in bot_settings.DAY_RANGES:
+            dates = stock_data.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
+        else:
+            dates = stock_data.index.strftime('%m-%d %H:%M')  # Convert datetime index to strings
+
         close_prices = stock_data["Close"]
         ax2 = ax1.twinx()
         ax2.bar(dates, 
                 stock_data['Volume'], 
                 alpha=0.25, 
                 color=bot_settings.VOLUME_COLOR)
-
 
         # Create the plot
         for i in range(1, len(stock_data)):
@@ -166,14 +169,16 @@ class Stocks():
 
         # Change the color of x and y-axis tick marks
         ax1.tick_params(colors=bot_settings.WHITE_COLOR,
-                        labelsize=7)
+                        labelsize=6.5)
 
-        ax1.set_xticks(dates[::15])
+        num_intervals = max(num_points // 6, 1) # this seems to work well, (only tested with interval=1d)
+
+        ax1.set_xticks(dates[::num_intervals])
 
         ax2.tick_params(axis='y', 
                         which='both', 
                         colors=bot_settings.WHITE_COLOR, 
-                        labelsize=7)
+                        labelsize=6.5)
 
         # Add grid lines
         ax1.grid(color=bot_settings.WHITE_COLOR, 

@@ -45,7 +45,6 @@ class Settings(BaseSettings):
         "5y",
         "10y",
         "ytd",
-        "max",
     }
 
     VALID_INTERVALS: set = {
@@ -57,6 +56,14 @@ class Settings(BaseSettings):
         "60m",
         "90m",
         "1h",
+        "1d",
+        "5d",
+        "1wk",
+        "1mo",
+        "3mo",
+    }
+
+    DAY_RANGES: set = {
         "1d",
         "5d",
         "1wk",
