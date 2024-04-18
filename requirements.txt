@@ -1,1 +1,8 @@
 discord.py==2.3.2
+matplotlib==3.8.4
+yfinance==0.2.37
+numpy==1.26.4
+pandas==2.2.2
+dotenv==1.0.0
+pydantic==2.6.1
+pydantic-settings==2.1.0

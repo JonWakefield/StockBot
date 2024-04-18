@@ -133,7 +133,6 @@ class Stocks():
 
         fig, ax1 = plt.subplots()
 
-
         if interval in bot_settings.DAY_INTERVALS:
             dates = stock_data.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
         else:
@@ -209,6 +208,14 @@ class Stocks():
                                  interval=interval)
         
         num_points = len(stock_data)
+
+        print(num_points)
+        # candle_width = 0.8
+        candle_width = 0.6
+        # candle_width = round(59.2 / num_points, 3)
+        # stem_width =  0.15
+        stem_width =  0.15
+        # stem_width =  round(11.1 / num_points, 3)
         
         fig, ax1 = plt.subplots()
         ax2 = ax1.twinx()
@@ -235,14 +242,14 @@ class Stocks():
                 color=bot_settings.VOLUME_COLOR)
 
         # # Plotting up prices of the stock 
-        ax1.bar(up_dates, up["Close"] - up["Open"], bot_settings.CANDLE_WIDTH, bottom=up["Open"], color=bot_settings.GREEN_COLOR) 
-        ax1.bar(up_dates, up["High"] - up["Close"], bot_settings.STEM_WIDTH, bottom=up["Close"], color=bot_settings.GREEN_COLOR) 
-        ax1.bar(up_dates, up["Low"] - up["Open"], bot_settings.STEM_WIDTH, bottom=up["Open"], color=bot_settings.GREEN_COLOR) 
+        ax1.bar(up_dates, up["Close"] - up["Open"], candle_width, bottom=up["Open"], color=bot_settings.GREEN_COLOR) 
+        ax1.bar(up_dates, up["High"] - up["Close"], stem_width, bottom=up["Close"], color=bot_settings.GREEN_COLOR) 
+        ax1.bar(up_dates, up["Low"] - up["Open"], stem_width, bottom=up["Open"], color=bot_settings.GREEN_COLOR) 
 
         # Plotting down prices of the stock 
-        ax1.bar(down_dates, down["Close"] - down["Open"],  bot_settings.CANDLE_WIDTH, bottom=down["Open"], color=bot_settings.RED_COLOR) 
-        ax1.bar(down_dates, down["High"] -  down["Open"], bot_settings.STEM_WIDTH, bottom=down["Open"], color=bot_settings.RED_COLOR) 
-        ax1.bar(down_dates, down["Low"] - down["Close"], bot_settings.STEM_WIDTH, bottom=down["Close"], color=bot_settings.RED_COLOR) 
+        ax1.bar(down_dates, down["Close"] - down["Open"],  candle_width, bottom=down["Open"], color=bot_settings.RED_COLOR) 
+        ax1.bar(down_dates, down["High"] -  down["Open"], stem_width, bottom=down["Open"], color=bot_settings.RED_COLOR) 
+        ax1.bar(down_dates, down["Low"] - down["Close"], stem_width, bottom=down["Close"], color=bot_settings.RED_COLOR) 
 
         # # rotating the x-axis tick labels at 30degree 
         plt.xticks(rotation=30, ha='right') 

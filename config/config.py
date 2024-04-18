@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     DISCORD_API_SECRET: str = os.getenv('DISCORD_API_TOKEN')
     DECIMAL_PLACES: int = 2
 
+    MAX_TICKERS: int = 10
+
     GREEN_COLOR: str = "#00FF00"
     RED_COLOR: str = "#FF0000"
     VOLUME_COLOR: str = "#00BFFF"

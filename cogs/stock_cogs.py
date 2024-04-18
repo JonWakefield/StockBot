@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from src.stocks import Stocks
-from config.config import bot_settings
+from config.config import bot_settings, log
 
 class StockCogs(commands.Cog, 
                 name="Stocks",
@@ -21,13 +21,24 @@ class StockCogs(commands.Cog,
             hidden=False
     )
     async def ticker_command(self, ctx, *tickers: str) -> dict | None:
+        """"""
+
         if not tickers:
             await ctx.send("Please provide a ticker. `!help ticker` for more details")
             return None
         
+        if len(tickers) > bot_settings.MAX_TICKERS:
+            await ctx.send(f"Too many requests sent. Please limit the number of tickers per request to `{bot_settings.MAX_TICKERS}`.")
+            return None
+
         for ticker in tickers:
 
-            stock_data = await Stocks.get_ticker_info(ticker=ticker)
+            try:
+                stock_data = await Stocks.get_ticker_info(ticker=ticker)
+            except Exception as e:
+                log.error(f"Unknown error occured. Details: ticker {ticker}. Error: {e}")
+                await ctx.send(f"Error occured retreiving data for {ticker.upper()}. `!help ticker` for more details")
+                return None
     
             embed = discord.Embed(title=f"Stock Data for ${ticker.upper()}", color=0x00ff00)
     
@@ -51,11 +62,20 @@ class StockCogs(commands.Cog,
         if not etfs:
             await ctx.send("Please provide a ETF. `!help etf` for more details")
             return None
-        
+
+        if len(etfs) > bot_settings.MAX_TICKERS:
+            await ctx.send(f"Too many requests sent. Please limit the number of tickers per request to `{bot_settings.MAX_TICKERS}`.")
+            return None
+
         for etf in etfs:
 
-            etf_data = await Stocks.get_etf_info(ticker=etf)
-
+            try:
+                etf_data = await Stocks.get_etf_info(ticker=etf)
+            except Exception as e:
+                log.error(f"Unknown error occured. Details: ticker {etf}. Error: {e}")
+                await ctx.send(f"Error occured retreiving data for {etf.upper()}. `!help etf` for more details")
+                return None
+            
             embed = discord.Embed(title=f"ETF data for ${etf.upper()}", color=0x00ff00)
 
             for k, v in etf_data.items():
@@ -79,8 +99,18 @@ class StockCogs(commands.Cog,
             await ctx.send("Please provide a coin. `!help coin` for more details")
             return
         
+        if len(coins) > bot_settings.MAX_TICKERS:
+            await ctx.send(f"Too many requests sent. Please limit the number of tickers per request to `{bot_settings.MAX_TICKERS}`.")
+            return None
+
         for coin in coins:
-            coin_data = await Stocks.get_coin_info(coin=coin)
+
+            try:
+                coin_data = await Stocks.get_coin_info(coin=coin)
+            except Exception as e:
+                log.error(f"Unknown error occured. Details: ticker {coin}. Error: {e}")
+                await ctx.send(f"Error occured retreiving data for {coin.upper()}. `!help coin` for more details")
+                return None
     
             embed = discord.Embed(title=f"Coin Data for ${coin.upper()}", color=0x00ff00)
     
@@ -125,13 +155,30 @@ class StockCogs(commands.Cog,
 
         match chart_type:
             case "candle":
-                chart = await Stocks.create_candle_chart(security=stock,
+                try:
+                    chart = await Stocks.create_candle_chart(security=stock,
                                                          time_frame=time_frame,
                                                          interval=interval)
+                except AttributeError as err:
+                    await ctx.send(f"Unable to generate a chart for ticker `{stock.upper()}`. Use `!help chart` for proper formatting")
+                    return None
+                except Exception as e:
+                    log.error(f"Unknown error occured. ticker: {stock}, time_frame: {time_frame}, interval: {interval}, Error: {e}")
+                    await ctx.send(f"Unable to generate a chart for ticker `{stock.upper()}`. Use `!help chart` for proper formatting")
+                    return None
+
             case "line":
-                chart = await Stocks.create_line_chart(security=stock,
-                                                       time_frame=time_frame,
-                                                       interval=interval)
+                try:
+                    chart = await Stocks.create_line_chart(security=stock,
+                                                        time_frame=time_frame,
+                                                        interval=interval)
+                except AttributeError as err:
+                    await ctx.send(f"Unable to generate a chart for ticker `{stock.upper()}`. Use `!help chart` for proper formatting")
+                    return None
+                except Exception as e:
+                    log.error(f"Unknown error occured. ticker: {stock}, time_frame: {time_frame}, interval: {interval}, Error: {e}")
+                    await ctx.send(f"Unable to generate a chart for ticker `{stock.upper()}`. Use `!help chart` for proper formatting")
+                    return None
             case _:
                 # INVALID CHART chart_type
                 print("default")
@@ -139,4 +186,4 @@ class StockCogs(commands.Cog,
                 return None
 
         # await ctx.send("sending...")
-        await ctx.send(file=discord.File(chart, 'chart.jpg'))
+        await ctx.send(file=discord.File(chart, f'chart_{stock}.jpg'))
