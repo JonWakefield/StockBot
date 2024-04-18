@@ -91,7 +91,7 @@ class Settings(BaseSettings):
         "3mo",
     }
 
-    # Explanation: For example, can't support users wanting to do 5y:5m charts (breaks matplotlib, just too much data)
+    # Explanation: For example, can't support users wanting to do 5y:5m charts (breaks matplotlib, just too much data, Yfinance doesn't allow it either)
     # Ensures the user provided combination is valid (also prevents interval > time_frame)
     VALID_CHART_COMBOS: dict = {
         "1d": SUBDAY_INTERVALS,

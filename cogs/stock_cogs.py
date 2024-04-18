@@ -47,7 +47,6 @@ class StockCogs(commands.Cog,
             for k, v in stock_data.items():
                 embed.add_field(name=k, value=v, inline=True)
             
-            # to send something back we go 
             await ctx.send(embed=embed)
 
 
@@ -119,7 +118,6 @@ class StockCogs(commands.Cog,
             for k, v in coin_data.items():
                 embed.add_field(name=k, value=v, inline=True)
             
-            # to send something back we go 
             await ctx.send(embed=embed)
 
     @commands.command(
@@ -141,15 +139,12 @@ class StockCogs(commands.Cog,
         time_frame = time_frame.lower()
         interval = interval.lower()
 
-        print(ticker)
-        print(chart_type)
-
         if ticker is None:
-            await ctx.send("Please provide a ticker. `!help charts` for more details")
+            await ctx.send("Please provide a ticker. `!help chart` for more details")
             return None
 
         if time_frame not in bot_settings.VALID_TIME_FRAMES:
-            await ctx.send("Please provide a valid time frame `!help charts` for more details")
+            await ctx.send("Please provide a valid time frame `!help chart` for more details")
             return None
 
 
@@ -194,8 +189,7 @@ class StockCogs(commands.Cog,
             case _:
                 # INVALID CHART chart_type
                 print("default")
-                await ctx.send("Unrecognized chart type. `!help charts` for more details")
+                await ctx.send("Unrecognized chart type. `!help chart` for more details")
                 return None
 
-        # await ctx.send("sending...")
         await ctx.send(file=discord.File(chart, f'chart_{ticker}.jpg'))

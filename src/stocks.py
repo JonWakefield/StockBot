@@ -5,9 +5,10 @@ from config.config import bot_settings, log
 import io
 from src.exceptions import StockNotFound
 
+
+
 class Stocks():
 
-    
     async def get_ticker_info(ticker: str) -> dict:
         """"""
 
@@ -140,9 +141,9 @@ class Stocks():
         fig, ax1 = plt.subplots()
 
         if interval in bot_settings.DAY_INTERVALS:
-            dates = stock_data.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
+            dates = stock_data.index.strftime('%Y-%m-%d') 
         else:
-            dates = stock_data.index.strftime('%m-%d %H:%M')  # Convert datetime index to strings
+            dates = stock_data.index.strftime('%m-%d %H:%M') 
 
         close_prices = stock_data["Close"]
         ax2 = ax1.twinx()
@@ -177,7 +178,7 @@ class Stocks():
         ax1.tick_params(colors=bot_settings.WHITE_COLOR,
                         labelsize=6.5)
 
-        num_intervals = max(num_points // 6, 1) # this seems to work well, (only tested with interval=1d)
+        num_intervals = max(num_points // 6, 1) # this seems to work well
 
         ax1.set_xticks(dates[::num_intervals])
 
@@ -215,32 +216,24 @@ class Stocks():
         
         num_points = len(stock_data)
 
-        print(num_points)
-        # candle_width = 0.8
-        candle_width = 0.6
-        # candle_width = round(59.2 / num_points, 3)
-        # stem_width =  0.15
+        candle_width = 0.7
         stem_width =  0.15
-        # stem_width =  round(11.1 / num_points, 3)
         
         fig, ax1 = plt.subplots()
         ax2 = ax1.twinx()
-
-        close_prices = stock_data["Close"]
-        open_prices = stock_data["Open"]
 
         # setup data
         up = stock_data[stock_data['Close'] >= stock_data['Open']]
         down = stock_data[stock_data['Close'] < stock_data['Open']]
 
         if interval in bot_settings.DAY_INTERVALS:
-            dates = stock_data.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
-            up_dates = up.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
-            down_dates = down.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
+            dates = stock_data.index.strftime('%Y-%m-%d')  
+            up_dates = up.index.strftime('%Y-%m-%d')  
+            down_dates = down.index.strftime('%Y-%m-%d')  
         else:
-            dates = stock_data.index.strftime('%m-%d %H:%M')  # Convert datetime index to strings
-            up_dates = up.index.strftime('%m-%d %H:%M')  # Convert datetime index to strings
-            down_dates = down.index.strftime('%m-%d %H:%M')  # Convert datetime index to strings
+            dates = stock_data.index.strftime('%m-%d %H:%M')  
+            up_dates = up.index.strftime('%m-%d %H:%M')  
+            down_dates = down.index.strftime('%m-%d %H:%M')  
 
         ax2.bar(dates,
                 stock_data['Volume'],
