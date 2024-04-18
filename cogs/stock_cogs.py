@@ -17,7 +17,7 @@ class StockCogs(commands.Cog,
             name="Ticker",
             aliases=["ticker"],
             help="Example: !ticker AAPL\nUser can provide multiple tickers in the same request\nExample: !ticker AAPL MSFT NVDA",
-            description="Retreive stock based information on the provided Ticker",
+            description="Retreive financial information on the provided Ticker",
             brief="Retreive stock infromation",
             enable=True,
             hidden=False
