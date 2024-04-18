@@ -102,7 +102,7 @@ class StockCogs(commands.Cog,
     async def chart_command(self, 
                             ctx, 
                             stock: str=None, 
-                            type: str="line",
+                            chart_type: str="line",
                             time_frame: str="ytd",
                             interval: str="1d") -> dict | None:
         """
@@ -118,11 +118,12 @@ class StockCogs(commands.Cog,
             await ctx.send("Please provide a valid time frame `!help charts` for more details")
             return None
 
+
         if interval not in bot_settings.VALID_CHART_COMBOS[time_frame]:
             await ctx.send("Please provide a valid interval `!help charts` for more details")
             return None
-        
-        match type:
+
+        match chart_type:
             case "candle":
                 chart = await Stocks.create_candle_chart(security=stock,
                                                          time_frame=time_frame,
@@ -132,7 +133,7 @@ class StockCogs(commands.Cog,
                                                        time_frame=time_frame,
                                                        interval=interval)
             case _:
-                # INVALID CHART TYPE
+                # INVALID CHART chart_type
                 print("default")
                 await ctx.send("Unrecognized chart type. `!help charts` for more details")
                 return None

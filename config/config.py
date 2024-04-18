@@ -64,7 +64,7 @@ class Settings(BaseSettings):
         "3mo",
     }
 
-    SUBDAY_RANGES: set = {
+    SUBDAY_INTERVALS: set = {
         "1m",
         "2m",
         "5m",
@@ -73,9 +73,18 @@ class Settings(BaseSettings):
         "60m",
         "90m",
         "1h",
+        "1d"
     }
 
-    DAY_RANGES: set = {
+    POSTDAY_INTERVALS: set = {
+        "1d",
+        "5d",
+        "1wk",
+        "1mo",
+        "3mo",
+    }
+
+    DAY_INTERVALS: set = {
         "1d",
         "5d",
         "1wk",
@@ -86,16 +95,16 @@ class Settings(BaseSettings):
     # Explanation: For example, can't support users wanting to do 5y:5m charts (breaks matplotlib, just too much data)
     # Ensures the user provided combination is valid (also prevents interval > time_frame)
     VALID_CHART_COMBOS: dict = {
-        "1d": SUBDAY_RANGES,
-        "5d": SUBDAY_RANGES.add("1d"),
-        "1mo": VALID_INTERVALS.remove("3mo"),
-        "3mo": VALID_INTERVALS,
-        "6mo": VALID_INTERVALS,
-        "1y": VALID_INTERVALS,
-        "2y": VALID_INTERVALS,
-        "5y": VALID_INTERVALS,
-        "10y": VALID_INTERVALS,
-        "ytd": VALID_INTERVALS,
+        "1d": SUBDAY_INTERVALS,
+        "5d": SUBDAY_INTERVALS,
+        "1mo": VALID_INTERVALS.copy(),
+        "3mo": VALID_INTERVALS.copy(),
+        "6mo": VALID_INTERVALS.copy(),
+        "ytd": VALID_INTERVALS.copy(),
+        "1y": POSTDAY_INTERVALS,
+        "2y": POSTDAY_INTERVALS,
+        "5y": POSTDAY_INTERVALS,
+        "10y": POSTDAY_INTERVALS,
     }
 
     VALID_Y_AXIS: set = {
@@ -106,6 +115,34 @@ class Settings(BaseSettings):
 
 
 bot_settings = Settings()
+
+# remove selected intervals
+bot_settings.VALID_CHART_COMBOS["1mo"].remove("1m")
+bot_settings.VALID_CHART_COMBOS["1mo"].remove("2m")
+bot_settings.VALID_CHART_COMBOS["1mo"].remove("1mo")
+bot_settings.VALID_CHART_COMBOS["1mo"].remove("3mo")
+
+bot_settings.VALID_CHART_COMBOS["3mo"].remove("1m")
+bot_settings.VALID_CHART_COMBOS["3mo"].remove("2m")
+bot_settings.VALID_CHART_COMBOS["3mo"].remove("5m")
+bot_settings.VALID_CHART_COMBOS["3mo"].remove("15m")
+bot_settings.VALID_CHART_COMBOS["3mo"].remove("30m")
+bot_settings.VALID_CHART_COMBOS["3mo"].remove("90m")
+bot_settings.VALID_CHART_COMBOS["3mo"].remove("3mo")
+
+bot_settings.VALID_CHART_COMBOS["6mo"].remove("1m")
+bot_settings.VALID_CHART_COMBOS["6mo"].remove("2m")
+bot_settings.VALID_CHART_COMBOS["6mo"].remove("5m")
+bot_settings.VALID_CHART_COMBOS["6mo"].remove("15m")
+bot_settings.VALID_CHART_COMBOS["6mo"].remove("30m")
+bot_settings.VALID_CHART_COMBOS["6mo"].remove("90m")
+
+bot_settings.VALID_CHART_COMBOS["ytd"].remove("1m")
+bot_settings.VALID_CHART_COMBOS["ytd"].remove("2m")
+bot_settings.VALID_CHART_COMBOS["ytd"].remove("5m")
+bot_settings.VALID_CHART_COMBOS["ytd"].remove("15m")
+bot_settings.VALID_CHART_COMBOS["ytd"].remove("30m")
+bot_settings.VALID_CHART_COMBOS["ytd"].remove("90m")
 
 
 log = Logger()

@@ -133,7 +133,8 @@ class Stocks():
 
         fig, ax1 = plt.subplots()
 
-        if interval in bot_settings.DAY_RANGES:
+
+        if interval in bot_settings.DAY_INTERVALS:
             dates = stock_data.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
         else:
             dates = stock_data.index.strftime('%m-%d %H:%M')  # Convert datetime index to strings
@@ -207,28 +208,41 @@ class Stocks():
                                  period=time_frame,
                                  interval=interval)
         
-
+        num_points = len(stock_data)
+        
         fig, ax1 = plt.subplots()
         ax2 = ax1.twinx()
 
-        ax2.bar(stock_data.index,
-                stock_data['Volume'],
-                alpha=0.25,
-                color=bot_settings.VOLUME_COLOR)
-        
+        close_prices = stock_data["Close"]
+        open_prices = stock_data["Open"]
+
         # setup data
         up = stock_data[stock_data['Close'] >= stock_data['Open']]
         down = stock_data[stock_data['Close'] < stock_data['Open']]
 
+        if interval in bot_settings.DAY_INTERVALS:
+            dates = stock_data.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
+            up_dates = up.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
+            down_dates = down.index.strftime('%Y-%m-%d')  # Convert datetime index to strings
+        else:
+            dates = stock_data.index.strftime('%m-%d %H:%M')  # Convert datetime index to strings
+            up_dates = up.index.strftime('%m-%d %H:%M')  # Convert datetime index to strings
+            down_dates = down.index.strftime('%m-%d %H:%M')  # Convert datetime index to strings
+
+        ax2.bar(dates,
+                stock_data['Volume'],
+                alpha=0.25,
+                color=bot_settings.VOLUME_COLOR)
+
         # # Plotting up prices of the stock 
-        ax1.bar(up.index, up["Close"] - up["Open"], bot_settings.CANDLE_WIDTH, bottom=up["Open"], color=bot_settings.GREEN_COLOR) 
-        ax1.bar(up.index, up["High"] - up["Close"], bot_settings.STEM_WIDTH, bottom=up["Close"], color=bot_settings.GREEN_COLOR) 
-        ax1.bar(up.index, up["Low"] - up["Open"], bot_settings.STEM_WIDTH, bottom=up["Open"], color=bot_settings.GREEN_COLOR) 
+        ax1.bar(up_dates, up["Close"] - up["Open"], bot_settings.CANDLE_WIDTH, bottom=up["Open"], color=bot_settings.GREEN_COLOR) 
+        ax1.bar(up_dates, up["High"] - up["Close"], bot_settings.STEM_WIDTH, bottom=up["Close"], color=bot_settings.GREEN_COLOR) 
+        ax1.bar(up_dates, up["Low"] - up["Open"], bot_settings.STEM_WIDTH, bottom=up["Open"], color=bot_settings.GREEN_COLOR) 
 
         # Plotting down prices of the stock 
-        ax1.bar(down.index, down["Close"] - down["Open"],  bot_settings.CANDLE_WIDTH, bottom=down["Open"], color=bot_settings.RED_COLOR) 
-        ax1.bar(down.index, down["High"] -  down["Open"], bot_settings.STEM_WIDTH, bottom=down["Open"], color=bot_settings.RED_COLOR) 
-        ax1.bar(down.index, down["Low"] - down["Close"], bot_settings.STEM_WIDTH, bottom=down["Close"], color=bot_settings.RED_COLOR) 
+        ax1.bar(down_dates, down["Close"] - down["Open"],  bot_settings.CANDLE_WIDTH, bottom=down["Open"], color=bot_settings.RED_COLOR) 
+        ax1.bar(down_dates, down["High"] -  down["Open"], bot_settings.STEM_WIDTH, bottom=down["Open"], color=bot_settings.RED_COLOR) 
+        ax1.bar(down_dates, down["Low"] - down["Close"], bot_settings.STEM_WIDTH, bottom=down["Close"], color=bot_settings.RED_COLOR) 
 
         # # rotating the x-axis tick labels at 30degree 
         plt.xticks(rotation=30, ha='right') 
@@ -241,6 +255,11 @@ class Stocks():
 
         ax2.set_zorder(1)
         ax1.set_zorder(2.5)
+
+        num_intervals = max(num_points // 6, 1) # this seems to work well, (only tested with interval=1d)
+
+        ax1.set_xticks(dates[::num_intervals])
+
 
         ax1.tick_params(colors=bot_settings.WHITE_COLOR,
                         labelsize=7)
