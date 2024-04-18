@@ -99,10 +99,10 @@ class Settings(BaseSettings):
     VALID_CHART_COMBOS: dict = {
         "1d": SUBDAY_INTERVALS,
         "5d": SUBDAY_INTERVALS,
-        "1mo": VALID_INTERVALS.copy(),
-        "3mo": VALID_INTERVALS.copy(),
-        "6mo": VALID_INTERVALS.copy(),
-        "ytd": VALID_INTERVALS.copy(),
+        "1mo": {"5m", "15m","30m","60m","90m","1h","1d","5d","1wk"},
+        "3mo": {"60m","1h","1d","5d","1wk","1mo"}, # strange enough, yfinance won't let you use 90min intervals, but supports 60min intervals lol
+        "6mo": {"60m","1h","1d","5d","1wk","1mo","3mo"},
+        "ytd": VALID_INTERVALS, # we will let yfinance manually check this since range varies.
         "1y": POSTDAY_INTERVALS,
         "2y": POSTDAY_INTERVALS,
         "5y": POSTDAY_INTERVALS,
@@ -117,34 +117,5 @@ class Settings(BaseSettings):
 
 
 bot_settings = Settings()
-
-# remove selected intervals
-bot_settings.VALID_CHART_COMBOS["1mo"].remove("1m")
-bot_settings.VALID_CHART_COMBOS["1mo"].remove("2m")
-bot_settings.VALID_CHART_COMBOS["1mo"].remove("1mo")
-bot_settings.VALID_CHART_COMBOS["1mo"].remove("3mo")
-
-bot_settings.VALID_CHART_COMBOS["3mo"].remove("1m")
-bot_settings.VALID_CHART_COMBOS["3mo"].remove("2m")
-bot_settings.VALID_CHART_COMBOS["3mo"].remove("5m")
-bot_settings.VALID_CHART_COMBOS["3mo"].remove("15m")
-bot_settings.VALID_CHART_COMBOS["3mo"].remove("30m")
-bot_settings.VALID_CHART_COMBOS["3mo"].remove("90m")
-bot_settings.VALID_CHART_COMBOS["3mo"].remove("3mo")
-
-bot_settings.VALID_CHART_COMBOS["6mo"].remove("1m")
-bot_settings.VALID_CHART_COMBOS["6mo"].remove("2m")
-bot_settings.VALID_CHART_COMBOS["6mo"].remove("5m")
-bot_settings.VALID_CHART_COMBOS["6mo"].remove("15m")
-bot_settings.VALID_CHART_COMBOS["6mo"].remove("30m")
-bot_settings.VALID_CHART_COMBOS["6mo"].remove("90m")
-
-bot_settings.VALID_CHART_COMBOS["ytd"].remove("1m")
-bot_settings.VALID_CHART_COMBOS["ytd"].remove("2m")
-bot_settings.VALID_CHART_COMBOS["ytd"].remove("5m")
-bot_settings.VALID_CHART_COMBOS["ytd"].remove("15m")
-bot_settings.VALID_CHART_COMBOS["ytd"].remove("30m")
-bot_settings.VALID_CHART_COMBOS["ytd"].remove("90m")
-
 
 log = Logger()

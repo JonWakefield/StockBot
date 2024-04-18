@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from src.stocks import Stocks
 from config.config import bot_settings, log
+from src.exceptions import IntervalError
 
 class StockCogs(commands.Cog, 
                 name="Stocks",
@@ -150,7 +151,7 @@ class StockCogs(commands.Cog,
 
 
         if interval not in bot_settings.VALID_CHART_COMBOS[time_frame]:
-            await ctx.send("Please provide a valid interval `!help charts` for more details")
+            await ctx.send(IntervalError(time_frame, interval))
             return None
 
         match chart_type:
@@ -161,6 +162,10 @@ class StockCogs(commands.Cog,
                                                          interval=interval)
                 except AttributeError as err:
                     await ctx.send(f"Unable to generate a chart for ticker `{stock.upper()}`. Use `!help chart` for proper formatting")
+                    return None
+                except IntervalError as err:
+                    print(err)
+                    await ctx.send(err)
                     return None
                 except Exception as e:
                     log.error(f"Unknown error occured. ticker: {stock}, time_frame: {time_frame}, interval: {interval}, Error: {e}")
@@ -174,6 +179,10 @@ class StockCogs(commands.Cog,
                                                         interval=interval)
                 except AttributeError as err:
                     await ctx.send(f"Unable to generate a chart for ticker `{stock.upper()}`. Use `!help chart` for proper formatting")
+                    return None
+                except IntervalError as err:
+                    print(err)
+                    await ctx.send(err)
                     return None
                 except Exception as e:
                     log.error(f"Unknown error occured. ticker: {stock}, time_frame: {time_frame}, interval: {interval}, Error: {e}")

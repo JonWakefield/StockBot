@@ -1,4 +1,2 @@
-- something like "env vars" for when users use the command
-- improve the "valid intervals"
 - Scale the width of the candle charts (both,) when the period is changed
 - Final codebase touches (read through code, throw out any BS, improve user help)

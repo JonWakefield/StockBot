@@ -3,6 +3,7 @@ import yfinance as yf
 from utils.strings import Strings
 from config.config import bot_settings, log
 import io
+from src.exceptions import IntervalError
 
 class Stocks():
 
@@ -125,6 +126,11 @@ class Stocks():
         stock_data = yf.download(tickers=security, 
                                  period=time_frame,
                                  interval=interval)
+        
+        if stock_data.empty:
+            #unable to retreive data 
+            raise IntervalError(time_frame, interval)
+        
         
         num_points = len(stock_data)
 
