@@ -11,6 +11,7 @@ With StockBot, users can quickly access financial data and visualize the perform
 - [Features](#features)
 - [Usage](#usage)
 - [Commands](#commands)
+- [Example Chart](#example-chart)
 - [Contributions](#contributions)
 
 ## Features
@@ -36,6 +37,10 @@ To use StockBot, simply invite it to your Discord server and start interacting w
   `!chart [ticker]`
 
 - For a full list of commands and their usage, type `!help` in your Discord server.
+
+### Example Chart
+
+![ExampleNvidaChart](example_chart.png)
 
 ## Support and Feedback
 
