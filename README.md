@@ -40,7 +40,7 @@ To use StockBot, simply invite it to your Discord server and start interacting w
 
 ### Example Chart
 
-![ExampleChart](example_chart.png)
+![ExampleChart](image.png)
 
 ## Support and Feedback
 
