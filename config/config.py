@@ -6,12 +6,6 @@ from .logger import Logger
 
 load_dotenv()
 
-BASE_DIR = pathlib.Path(__file__).parent.parent
-print(f"Base dir is {BASE_DIR}")
-
-CMDS_DIR = BASE_DIR / "cmds"
-print(f"CMDS DIR IS {CMDS_DIR}")
-
 class Settings(BaseSettings):
 
     DISCORD_API_SECRET: str = os.getenv('DISCORD_API_TOKEN')
@@ -22,8 +16,10 @@ class Settings(BaseSettings):
     GREEN_COLOR: str = "#00FF00"
     RED_COLOR: str = "#FF0000"
     VOLUME_COLOR: str = "#00BFFF"
-    BACKGROUND_COLOR: str = "#1B1B1B"
-    WHITE_COLOR: str = "#FFFDD0"
+    # BACKGROUND_COLOR: str = "#1B1B1B"
+    BACKGROUND_COLOR: str = "#090A11"
+    # WHITE_COLOR: str = "#FFFDD0"
+    WHITE_COLOR: str = "#EEEEEE"
 
     CANDLE_WIDTH: float = 0.9
     STEM_WIDTH: float = 0.4

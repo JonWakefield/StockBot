@@ -3,6 +3,7 @@ from discord.ext import commands
 from src.stocks import Stocks
 from config.config import bot_settings, log
 from src.exceptions import IntervalError
+from discord.ext.commands import Context
 
 class StockCogs(commands.Cog, 
                 name="Stocks",
@@ -10,6 +11,15 @@ class StockCogs(commands.Cog,
     
     def __init__(self, bot):
         self.bot = bot
+
+
+    @commands.hybrid_command(
+            name="help", description="List all commands the bot has loaded"
+    )
+    async def help(self, ctx: Context) -> None:
+        embed = discord.Embed(
+            title="Help", description="List of all available commands:", color=0xBEBEFE
+        )
 
     
     @commands.command(
@@ -21,7 +31,7 @@ class StockCogs(commands.Cog,
             enable=True,
             hidden=False
     )
-    async def ticker_command(self, ctx, *tickers: str) -> dict | None:
+    async def ticker_command(self, ctx: Context, *tickers: str) -> dict | None:
         """"""
 
         if not tickers:
@@ -59,7 +69,7 @@ class StockCogs(commands.Cog,
             enable=True,
             hidden=False
     )
-    async def etf_command(self, ctx, *etfs: str) -> dict | None:
+    async def etf_command(self, ctx: Context, *etfs: str) -> dict | None:
         if not etfs:
             await ctx.send("Please provide a ETF. `!help etf` for more details")
             return None
@@ -94,7 +104,7 @@ class StockCogs(commands.Cog,
             enalbe=True,
             hidden=False
     )
-    async def coin_command(self, ctx, *coins: str) -> dict:
+    async def coin_command(self, ctx: Context, *coins: str) -> dict:
 
         if not coins:
             await ctx.send("Please provide a coin. `!help coin` for more details")
@@ -131,7 +141,7 @@ class StockCogs(commands.Cog,
             hidden=False
     )
     async def chart_command(self, 
-                            ctx, 
+                            ctx: Context, 
                             stock: str=None, 
                             chart_type: str="line",
                             time_frame: str="ytd",
