@@ -3,7 +3,7 @@ import yfinance as yf
 from utils.strings import Strings
 from config.config import bot_settings, log
 import io
-from src.exceptions import IntervalError
+from src.exceptions import StockNotFound
 
 class Stocks():
 
@@ -18,10 +18,10 @@ class Stocks():
         try:
             if ticker_info["quoteType"] != "EQUITY":
                 log.info(f"Wrong equity type submitted {ticker}")
-                return {"Status": f"Unable to retreive stock info for {ticker} (For Crypto, use !coin. For ETF, use !etf)"}
+                return {"Status": f"Unable to retreive stock info for {ticker} (For help use `!help ticker`. For Crypto, use !coin. For ETF, use !etf)"}
         except KeyError as e:
             log.info(f"Unknown equity submitted {ticker}")
-            return {"Status": f"Unable to retreive stock info for {ticker} (For Crypto, use !coin. For ETF, use !etf)"}
+            return {"Status": f"Unable to retreive stock info for {ticker} (For help use `!help ticker`. For Crypto, use !coin. For ETF, use !etf)"}
 
         try:
             stock_data = {
@@ -41,7 +41,7 @@ class Stocks():
             return stock_data
         except KeyError as e:
             log.info(f"Got error trying to retreive key info for ticker {ticker}. Error {e}")
-            return {"Status": f"Unable to retreive stock info for {ticker} (For coins, use !coin. For ETFs, use !etf)"}
+            return {"Status": f"Unable to retreive stock info for {ticker} (For help use `!help ticker`. For Crypto, use !coin. For ETF, use !etf)"}
 
 
     async def get_coin_info(coin: str) -> dict:
@@ -55,10 +55,10 @@ class Stocks():
         try:
             if ticker_info["quoteType"] != "CRYPTOCURRENCY":
                 log.info(f"Wrong equity type submitted {coin}")
-                return {"Status": f"Unable to retreive coin info for {coin} (For Stocks, use !ticker. For ETFs, use !etf)"}
+                return {"Status": f"Unable to retreive coin info for {coin} (For help use `!help coin`. For Stocks, use !ticker. For ETFs, use !etf)"}
         except KeyError as e:
             log.info(f"Unknown coin submitted {coin}")
-            return {"Status": f"Unable to retreive coin info for {coin} (For Stocks, use !ticker. For ETFs, use !etf)"}
+            return {"Status": f"Unable to retreive coin info for {coin} (For help use `!help coin`. For Stocks, use !ticker. For ETFs, use !etf)"}
             
         try:
             coin_data = {
@@ -77,7 +77,7 @@ class Stocks():
             return coin_data
         except KeyError as e:
             log.info(f"Got error trying to retreive key info for ticker {coin}. Error {e}")
-            return {"Status": f"Unable to retreive coin info for {coin} (For Stocks, use !ticker. For ETFs, use !etf)"}
+            return {"Status": f"Unable to retreive coin info for {coin} (For help use `!help coin`. For Stocks, use !ticker. For ETFs, use !etf)"}
 
 
 
@@ -92,10 +92,10 @@ class Stocks():
         try:
             if ticker_info['quoteType'] != "ETF":
                 log.info(f"Wrong equity type submitted {ticker}")
-                return {"Status": f"Unable to retreive stock info for {ticker} (For Crypto, use !coin. For ETF, use !etf)"}
+                return {"Status": f"Unable to retreive etf info for {ticker} (For help use `!help etf`. For Crypto, use !coin. For ETF, use !etf)"}
         except KeyError as e:
             log.info(f"Unknown etf submitted {ticker}")
-            return {"Status": f"Unable to retreive stock info for {ticker} (For Crypto, use !coin. For ETF, use !etf)"}
+            return {"Status": f"Unable to retreive etf info for {ticker} (For help use `!help etf`. For Crypto, use !coin. For ETF, use !etf)"}
 
         try:
             stock_data = {
@@ -113,7 +113,7 @@ class Stocks():
             return stock_data
         except KeyError as e:
             log.info(f"Got error trying to retreive key info for ticker {ticker}. Error {e}")
-            return {"Status": f"Unable to retreive ETF info for {ticker} (For Stocks, use !ticker. For coins, use !coin)"}
+            return {"Status": f"Unable to retreive etf info for {ticker} (For help use `!help etf`. For Crypto, use !coin. For ETF, use !etf)"}
         
 
 
@@ -129,7 +129,7 @@ class Stocks():
         
         if stock_data.empty:
             #unable to retreive data 
-            raise IntervalError(time_frame, interval)
+            raise StockNotFound(security.upper())
         
         
         num_points = len(stock_data)

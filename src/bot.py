@@ -6,7 +6,6 @@ class StockBot(commands.Bot):
         super().__init__(
             command_prefix=commands.when_mentioned_or(command_prefix),
             intents=intents,
-            help_command=None,
         )
 
         self.settings = settings

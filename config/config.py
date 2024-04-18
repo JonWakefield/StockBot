@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     DISCORD_API_SECRET: str = os.getenv('DISCORD_API_TOKEN')
     DECIMAL_PLACES: int = 2
 
+    COMMAND_PREFIX: str = "!"
+
     MAX_TICKERS: int = 10
 
     GREEN_COLOR: str = "#00FF00"
@@ -45,7 +47,6 @@ class Settings(BaseSettings):
         "ytd",
     }
 
-    # not used but leaving as reference for all possible invtervals yfinance supports
     VALID_INTERVALS: set = {
         "1m",
         "2m",

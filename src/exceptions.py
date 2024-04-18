@@ -15,3 +15,16 @@ class IntervalError(Exception):
         else:
             self.message = f"Invalid time interval. Unable to retreive data for provided time range"
         super().__init__(self.message)
+
+
+class StockNotFound(Exception):
+    """Exception raised for unknown ticker symbols.
+
+    Attributes:
+        message -- explanation of error
+
+    """
+
+    def __init__(self, ticker: str):
+        self.message = f"Unable to retreive stock info for {ticker}"
+        super().__init__(self.message)

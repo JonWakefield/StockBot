@@ -8,8 +8,7 @@ def main():
     intents = discord.Intents.default()
     intents.message_content = True
 
-    # bot = commands.Bot(command_prefix="!", intents=intents)
-    stock_bot = StockBot(command_prefix="!", 
+    stock_bot = StockBot(command_prefix=bot_settings.COMMAND_PREFIX, 
                          intents=intents, 
                          settings=bot_settings)
 
