@@ -33,7 +33,7 @@ To use StockBot, simply invite it to your Discord server and start interacting w
   `!etf [ticker]`
 - **!coin** Retreive cryptocurrency information about the provided coin
   `!coin [ticker]`
-- **!chart** Create a chart based on the user provided ticker\n Works on Stocks, ETFs, & Crypto
+- **!chart** Create a chart based on the user provided ticker Works on Stocks, ETFs, & Crypto
   `!chart [ticker]`
 
 - For a full list of commands and their usage, type `!help` in your Discord server.
