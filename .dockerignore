@@ -1,0 +1,10 @@
+.git
+.gitignore
+
+__pycache__/
+*.pyc
+TODO
+tests/
+logo.png
+chart_example.png
+banner.png

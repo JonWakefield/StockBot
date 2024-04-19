@@ -162,7 +162,7 @@ class StockCogs(commands.Cog,
                     await ctx.send(f"Unable to generate a chart for ticker `{ticker.upper()}`. Use `!help chart` for proper formatting")
                     return None
                 except StockNotFound as err:
-                    print(err)
+                    log.error(err)
                     await ctx.send(err)
                     return None
                 except Exception as e:
@@ -179,7 +179,7 @@ class StockCogs(commands.Cog,
                     await ctx.send(f"Unable to generate a chart for ticker `{ticker.upper()}`. Use `!help chart` for proper formatting")
                     return None
                 except StockNotFound as err:
-                    print(err)
+                    log.error(err)
                     await ctx.send(err)
                     return None
                 except Exception as e:
@@ -188,7 +188,6 @@ class StockCogs(commands.Cog,
                     return None
             case _:
                 # INVALID CHART chart_type
-                print("default")
                 await ctx.send("Unrecognized chart type. `!help chart` for more details")
                 return None
 

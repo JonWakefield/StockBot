@@ -6,9 +6,9 @@ import inspect
 import platform
 
 if platform.system() == "Windows":
-    LOGGER_CONFIG_PATH = r"config\logging_config_windows.json"
+    LOGGER_CONFIG_PATH = r"config\logging_config.json"
 elif platform.system() == "Linux":
-    pass
+    LOGGER_CONFIG_PATH = "config/logging_config.json"
 else:
     print("Unrecognized OS!")
 

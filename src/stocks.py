@@ -214,6 +214,10 @@ class Stocks():
                                  period=time_frame,
                                  interval=interval)
         
+        if stock_data.empty:
+            #unable to retreive data 
+            raise StockNotFound(security.upper())
+        
         num_points = len(stock_data)
 
         candle_width = 0.7
